@@ -53,16 +53,65 @@ func Test_DataFromString_MultipleStatus(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(data.Status) != 1 {
-		t.Fatalf("expected array from adr-001, got: %#v", data.Status)
+	if len(data.Status) != 3 {
+		t.Fatalf("expected array from adr-002, got: %#v", data.Status)
 	}
 
 	if data.Status[0].Date != "today" {
-		t.Fatalf("expected string from adr-001, got: %v", data.Status[0].Date)
+		t.Fatalf("expected string from adr-002, got: %v", data.Status[0].Date)
 	}
 
 	if data.Status[0].Kind != Drafted {
-		t.Fatalf("expected string from adr-001, got: %v", data.Status[0].Kind)
+		t.Fatalf("expected string from adr-002, got: %v", data.Status[0].Kind)
+	}
+
+	if data.Status[1].Date != "2022-11-06" {
+		t.Fatalf("expected string from adr-002, got: %v", data.Status[0].Date)
+	}
+
+	if data.Status[1].Kind != Proposed {
+		t.Fatalf("expected string from adr-002, got: %v", data.Status[0].Kind)
+	}
+
+	if data.Status[2].Date != "2022-11-06" {
+		t.Fatalf("expected string from adr-002, got: %v", data.Status[0].Date)
+	}
+
+	if data.Status[2].Kind != Accepted {
+		t.Fatalf("expected string from adr-002, got: %v", data.Status[0].Kind)
+	}
+}
+
+func Test_DataFromString_Context(t *testing.T) {
+	data, err := getParsedData("adr-001.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if data.Context != "A context line.\n\nContext can actually be multiple lines." {
+		t.Fatalf("expected string from adr-001, got: %#v", data.Context)
+	}
+}
+
+func Test_DataFromString_Decision(t *testing.T) {
+	data, err := getParsedData("adr-001.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if data.Decision != "Lol this again.\nSodales lacus sed a efficitur arcu ut pellentesque purus proin. A tempus arcu. Massa non accumsan. At sodales lacus sed a efficitur arcu ut pellentesque. Sed a mollis." {
+		t.Fatalf("expected string from adr-001, got: %#v", data.Decision)
+	}
+}
+
+func Test_DataFromString_Consequences(t *testing.T) {
+	data, err := getParsedData("adr-001.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if data.Consequences != "Whole lotta these" {
+		t.Fatalf("expected string from adr-001, got: %#v", data.Consequences)
 	}
 }
 

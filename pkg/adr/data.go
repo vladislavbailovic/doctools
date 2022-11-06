@@ -49,11 +49,13 @@ func parseData(raw string) (Data, error) {
 	}
 
 	// status
-	status, err := parseStatus(lines[lineIdx])
-	if err != nil {
-		return data, ParseError("invalid status: %w", err)
+	for _, rawStatus := range strings.Split(lines[lineIdx], ",") {
+		status, err := parseStatus(strings.TrimSpace(rawStatus))
+		if err != nil {
+			return data, ParseError("invalid status: %w", err)
+		}
+		data.Status = append(data.Status, status)
 	}
-	data.Status = append(data.Status, status)
 
 	// context
 	lineIdx, err = next(lines, lineIdx, "Context")
