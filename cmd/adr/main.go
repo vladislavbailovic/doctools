@@ -1,14 +1,14 @@
 package main
 
 import (
-	"doctools/pkg"
-	"doctools/pkg/config"
-	"doctools/pkg/dbg"
-	"doctools/pkg/project"
 	_ "embed"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"doctools/pkg/config"
+	"doctools/pkg/dbg"
+	"doctools/pkg/project"
 )
 
 //go:embed resources/help.txt
@@ -19,7 +19,7 @@ const (
 )
 
 func initialize(cfg config.Configuration) {
-	if err := pkg.InitializeProject(cfg); err != nil {
+	if err := project.InitializeProjectDirectory(cfg); err != nil {
 		dbg.Error("error initializing project: %v", err)
 		return
 	}
@@ -51,7 +51,7 @@ func initialize(cfg config.Configuration) {
 func main() {
 	fmt.Printf("Help, then [%v]", help)
 
-	cfg, err := pkg.LoadConfiguration()
+	cfg, err := config.Load()
 	if err != nil {
 		dbg.Error("%v", err)
 		return
