@@ -68,9 +68,13 @@ func changeStatus(cfg config.Configuration, number uint, status adr.StatusType) 
 		dbg.Error("error getting adr data: %v", err)
 		return
 	}
-	// TODO: properly advance through status types
-	data.Status = append(data.Status, adr.Status{Kind: status, Date: "today"})
-	dbg.Debug("%#v", data)
+
+	updated := data.UpdateStatus(status)
+	if err := adr.Save(updated, repo); err != nil {
+		dbg.Error("error saving updated adr: %v", err)
+		return
+	}
+	dbg.Debug("Updated ADR status: %#v", updated.Status)
 }
 
 func main() {

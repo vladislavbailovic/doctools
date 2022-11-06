@@ -34,6 +34,11 @@ func (x Status) String() string {
 	return fmt.Sprintf("%s(%s)", kind, date)
 }
 
+func (x Data) UpdateStatus(s StatusType) Data {
+	x.Status = append(x.Status, Status{Kind: s, Date: "TODO"})
+	return x
+}
+
 func parseStatus(s string) (Status, error) {
 	var status Status
 
