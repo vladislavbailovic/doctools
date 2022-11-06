@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
+	"os"
 
 	"doctools/pkg/adr"
 	"doctools/pkg/config"
@@ -77,38 +77,63 @@ func changeStatus(cfg config.Configuration, number uint, status adr.StatusType) 
 	dbg.Debug("Updated ADR status: %#v", updated.Status)
 }
 
-func main() {
-	fmt.Printf("Help, then [%v]", help)
+func showHelp() {
+	dbg.Debug("showing help")
+	dbg.Debug("%v", help)
+}
+
+func createNewAdr(args []string) {
+	dbg.Debug("creating new")
+	dbg.Debug("%#v", args)
+	return
 
 	cfg, err := config.Load()
 	if err != nil {
 		dbg.Error("%v", err)
 		return
 	}
-	initialize(cfg)
+	create(cfg, "New ADR for testing")
+}
 
-	// create(cfg, "New ADR for testing")
+func changeAdrStatus(args []string) {
+	dbg.Debug("changing status")
+	dbg.Debug("%#v", args)
+	return
+
+	cfg, err := config.Load()
+	if err != nil {
+		dbg.Error("%v", err)
+		return
+	}
 	changeStatus(cfg, 1, adr.Proposed)
-	/*
-		data := adr.Data{
-			Title: "Use ADRs",
-			Status: []adr.Status{
-				adr.Status{Kind: adr.Drafted, Date: "2022-11-05"},
-				adr.Status{Kind: adr.Proposed, Date: "2022-11-05"},
-			},
-			Context:      "Keeping track of *why* something was done gets error-prone over time.",
-			Decision:     "We're gonna start using ADRs to document major decisions",
-			Consequences: "Start doctools utility development to facilitate this",
+}
+
+func initializeRepo() {
+	cfg, err := config.Load()
+	if err != nil {
+		dbg.Error("%v", err)
+		return
+	}
+	initialize(cfg)
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		showHelp()
+	} else {
+		switch os.Args[1] {
+		case "-h", "--help", "help":
+			showHelp()
+		case "init":
+			initializeRepo()
+		case "new", "draft", "create":
+			createNewAdr(os.Args[2:])
+		default:
+			if len(os.Args) > 2 {
+				changeAdrStatus(os.Args[2:])
+			} else {
+				showHelp()
+			}
 		}
-		repo, err := adr.GetRepo(cfg)
-		if err != nil {
-			dbg.Error("error getting adr repo: %v", err)
-			return
-		}
-		if err := adr.Save(data, repo); err != nil {
-			dbg.Error("error saving adr to repo: %v", err)
-			return
-		}
-		dbg.Debug("Saved ADR")
-	*/
+	}
 }
