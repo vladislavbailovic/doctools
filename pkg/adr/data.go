@@ -3,6 +3,7 @@ package adr
 import (
 	_ "embed"
 	"fmt"
+	"strconv"
 	"strings"
 	"text/template"
 )
@@ -40,8 +41,13 @@ func parseData(raw string) (Data, error) {
 	if len(parts) != 2 {
 		return data, ParseError("unrecognized title format: %s", lines[0])
 	}
-	// TODO: number
 	data.Title = strings.TrimSpace(parts[1])
+	// number
+	number, err := strconv.Atoi(strings.TrimSpace(parts[0][3:]))
+	if err != nil {
+		return data, ParseError("unrecognized number format (%s): %w", parts[0], err)
+	}
+	data.Number = uint(number)
 
 	lineIdx, err := next(lines, 1, "Status")
 	if err != nil {

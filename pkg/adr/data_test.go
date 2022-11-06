@@ -17,6 +17,26 @@ func Test_DataFromString_Title_Error(t *testing.T) {
 	}
 }
 
+func Test_DataFromString_Number(t *testing.T) {
+	data, err := getParsedData("adr-001.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if data.Number != 1 {
+		t.Fatalf("expected number from adr-001, got: %#v", data.Number)
+	}
+
+	data, err = getParsedData("adr-002.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if data.Number != 2 {
+		t.Fatalf("expected number from adr-002, got: %#v", data.Number)
+	}
+}
+
 func Test_DataFromString_Title(t *testing.T) {
 	data, err := getParsedData("adr-001.md")
 	if err != nil {
