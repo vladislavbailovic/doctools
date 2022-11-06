@@ -9,7 +9,7 @@ import (
 	"doctools/pkg/dbg"
 )
 
-func InitializeProjectConfig(cfg Configuration) error {
+func InitializeProject(cfg Configuration) error {
 	configFile, err := getProjectConfigFilePath()
 	if err != nil {
 		buffer, err := json.Marshal(cfg)

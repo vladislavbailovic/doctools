@@ -3,50 +3,58 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"doctools/pkg/adr"
 	"doctools/pkg/config"
 	"doctools/pkg/dbg"
-	"doctools/pkg/project"
+	"doctools/pkg/storage"
 )
 
 //go:embed resources/help.txt
 var help string
 
-const (
-	AdrDirectory string = "adr"
-)
-
 func initialize(cfg config.Configuration) {
-	if err := project.InitializeProjectDirectory(cfg); err != nil {
-		dbg.Error("error initializing project: %v", err)
+	if err := config.InitializeProject(cfg); err != nil {
+		dbg.Error("error initializing project config: %v", err)
+		return
+	}
+	if err := storage.InitializeProject(cfg); err != nil {
+		dbg.Error("error initializing project storage: %v", err)
 		return
 	}
 
-	docsDir, err := project.GetDocsDirectory(cfg)
+	repo, err := adr.GetRepo(cfg)
 	if err != nil {
-		dbg.Error("error getting doc dir: %v", err)
-		return
-	}
-
-	adrDir := filepath.Join(docsDir, AdrDirectory)
-	if nfo, err := os.Stat(adrDir); err != nil {
-		if err := os.Mkdir(adrDir, 0722); err != nil {
-			dbg.Error("error creating ADR subdir: %v", err)
+		if err := repo.Initialize(cfg); err != nil {
+			dbg.Error("error initializing ADR storage: %v", err)
 			return
 		}
-	} else if nfo.IsDir() {
-		dbg.Debug("yay")
+	}
+
+	dbg.Debug("Created subdirectory for ADRs")
+}
+
+func create(cfg config.Configuration, title string) {
+	repo, err := adr.GetRepo(cfg)
+	if err != nil {
+		dbg.Error("error getting adr repo: %v", err)
 		return
 	}
-
-	if _, err := os.Stat(adrDir); err != nil {
-		dbg.Error("ADR subdir not created (%s): %v", adrDir, err)
+	next, err := repo.NextID()
+	if err != nil {
+		dbg.Error("error getting next ID: %v", err)
+		return
 	}
-
-	dbg.Debug("Created subdirectory for ADRs: %s", adrDir)
+	data := adr.Data{
+		Number: next,
+		Title:  title,
+		Status: []adr.Status{adr.Status{Kind: adr.Drafted, Date: "today"}},
+	}
+	if err := adr.Save(data, repo); err != nil {
+		dbg.Error("error saving adr to repo: %v", err)
+		return
+	}
+	dbg.Debug("Created ADR: %d", next)
 }
 
 func main() {
@@ -59,15 +67,27 @@ func main() {
 	}
 	initialize(cfg)
 
-	adr := adr.Data{
-		Title: "Use ADRs",
-		Status: []adr.Status{
-			adr.Status{Kind: adr.Drafted, Date: "2022-11-05"},
-			adr.Status{Kind: adr.Proposed, Date: "2022-11-05"},
-		},
-		Context:      "Keeping track of *why* something was done gets error-prone over time.",
-		Decision:     "We're gonna start using ADRs to document major decisions",
-		Consequences: "Start doctools utility development to facilitate this",
-	}
-	dbg.Debug("\n\n%v\n\n", adr)
+	create(cfg, "New ADR for testing")
+	/*
+		data := adr.Data{
+			Title: "Use ADRs",
+			Status: []adr.Status{
+				adr.Status{Kind: adr.Drafted, Date: "2022-11-05"},
+				adr.Status{Kind: adr.Proposed, Date: "2022-11-05"},
+			},
+			Context:      "Keeping track of *why* something was done gets error-prone over time.",
+			Decision:     "We're gonna start using ADRs to document major decisions",
+			Consequences: "Start doctools utility development to facilitate this",
+		}
+		repo, err := adr.GetRepo(cfg)
+		if err != nil {
+			dbg.Error("error getting adr repo: %v", err)
+			return
+		}
+		if err := adr.Save(data, repo); err != nil {
+			dbg.Error("error saving adr to repo: %v", err)
+			return
+		}
+		dbg.Debug("Saved ADR")
+	*/
 }
