@@ -4,9 +4,6 @@ import (
 	"doctools/pkg/adr"
 	"doctools/pkg/config"
 	"doctools/pkg/dbg"
-	"fmt"
-	"os"
-	"os/exec"
 	"strings"
 )
 
@@ -41,25 +38,5 @@ func create(cfg config.Configuration, title string) {
 	}
 	dbg.Debug("Created ADR: %d", next)
 
-	editCreated(data, repo)
-}
-
-func editCreated(data adr.Data, repo adr.Repository) {
-	editor := os.Getenv("EDITOR")
-	if editor == "" {
-		return
-	}
-	fmt.Println(editor, repo.PathToADR(data))
-	cmd := exec.Command(editor, repo.PathToADR(data))
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Start(); err != nil {
-		dbg.Debug("error starting: %v", err)
-		return
-	}
-	if err := cmd.Wait(); err != nil {
-		dbg.Debug("error executing: %v", err)
-		return
-	}
+	openForEditing(data, repo)
 }

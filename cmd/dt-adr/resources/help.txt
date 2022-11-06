@@ -7,9 +7,11 @@ Subcommands:
 	help - this help screen (alias: -h, --help)
 	init - initialize document repository to hold ADR documents
 	new  - create a new ADR draft (alias: new, create)
+	edit [NUMBER] - edit ADR indicated by number
 	[STATUS] [NUMBER] - change status of the ADR indicated by number
 
 Example usage:
 	dt-adr draft Start using ADRs for the current project
+	dt-adr edit 1
 	dt-adr propose 1
 	dt-adr accept 1

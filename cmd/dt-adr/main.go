@@ -26,6 +26,8 @@ func main() {
 			initializeRepo()
 		case "new", "draft", "create":
 			createNewAdr(os.Args[2:])
+		case "edit":
+			editExisting(os.Args[2:])
 		default:
 			if len(os.Args) > 2 {
 				changeAdrStatus(os.Args[1:])
