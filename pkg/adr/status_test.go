@@ -1,4 +1,4 @@
-package main
+package adr
 
 import "testing"
 
@@ -15,7 +15,7 @@ func Test_ParseAdrStatus_Proposed(t *testing.T) {
 		t.Fatalf("error parsing Proposed: %v", err)
 	}
 
-	if s.kind != Proposed {
+	if s.Kind != Proposed {
 		t.Fatalf("couldn't parse Proposed: %v", s)
 	}
 }
@@ -26,11 +26,11 @@ func Test_ParseAdrStatus_Proposed_Date(t *testing.T) {
 		t.Fatalf("error parsing Proposed: %v", err)
 	}
 
-	if s.kind != Proposed {
+	if s.Kind != Proposed {
 		t.Fatalf("couldn't parse Proposed: %v", s)
 	}
 
-	if s.date != "not today" {
+	if s.Date != "not today" {
 		t.Fatalf("couldn't parse Proposed date: %v", s)
 	}
 }

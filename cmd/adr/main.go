@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"doctools/pkg/adr"
 	"doctools/pkg/config"
 	"doctools/pkg/dbg"
 	"doctools/pkg/project"
@@ -58,15 +59,15 @@ func main() {
 	}
 	initialize(cfg)
 
-	adr := Adr{
-		title: "Use ADRs",
-		status: []AdrStatus{
-			AdrStatus{kind: Drafted, date: "2022-11-05"},
-			AdrStatus{kind: Proposed, date: "2022-11-05"},
+	adr := adr.Data{
+		Title: "Use ADRs",
+		Status: []adr.Status{
+			adr.Status{Kind: adr.Drafted, Date: "2022-11-05"},
+			adr.Status{Kind: adr.Proposed, Date: "2022-11-05"},
 		},
-		context:      "Keeping track of *why* something was done gets error-prone over time.",
-		decision:     "We're gonna start using ADRs to document major decisions",
-		consequences: "Start doctools utility development to facilitate this",
+		Context:      "Keeping track of *why* something was done gets error-prone over time.",
+		Decision:     "We're gonna start using ADRs to document major decisions",
+		Consequences: "Start doctools utility development to facilitate this",
 	}
 	dbg.Debug("\n\n%v\n\n", adr)
 }
