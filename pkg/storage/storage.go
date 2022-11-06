@@ -45,6 +45,10 @@ func (x Repository) ListIDs() ([]string, error) {
 	return ids, err
 }
 
+func (x Repository) GetByID(id string) ([]byte, error) {
+	return os.ReadFile(filepath.Join(x.path, id+".md"))
+}
+
 func (x Repository) Save(what IdentifiedResource) error {
 	dest := filepath.Join(x.path, what.GetID()+".md")
 	return os.WriteFile(dest, what.Content(), 0622)

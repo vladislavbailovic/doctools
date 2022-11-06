@@ -17,11 +17,15 @@ type entity struct {
 }
 
 func (x entity) GetID() string {
-	return fmt.Sprintf("adr-%03d", x.data.Number)
+	return numberToEntityId(x.data.Number)
 }
 
 func (x entity) Content() []byte {
 	return []byte(x.data.String())
+}
+
+func numberToEntityId(num uint) string {
+	return fmt.Sprintf("adr-%03d", num)
 }
 
 func numberFromEntityId(id string) (int, error) {
@@ -31,6 +35,21 @@ func numberFromEntityId(id string) (int, error) {
 
 type Repository struct {
 	storage.Repository
+}
+
+func (x Repository) GetByNumber(num uint) (Data, error) {
+	var data Data
+	id := numberToEntityId(num)
+	raw, err := x.GetByID(id)
+	if err != nil {
+		return data, err
+	}
+	data, err = parseData(string(raw))
+	if err != nil {
+		return data, err
+	}
+	data.Number = num
+	return data, nil
 }
 
 func (x Repository) NextID() (uint, error) {

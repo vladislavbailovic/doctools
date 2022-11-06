@@ -57,6 +57,22 @@ func create(cfg config.Configuration, title string) {
 	dbg.Debug("Created ADR: %d", next)
 }
 
+func changeStatus(cfg config.Configuration, number uint, status adr.StatusType) {
+	repo, err := adr.GetRepo(cfg)
+	if err != nil {
+		dbg.Error("error getting adr repo: %v", err)
+		return
+	}
+	data, err := repo.GetByNumber(number)
+	if err != nil {
+		dbg.Error("error getting adr data: %v", err)
+		return
+	}
+	// TODO: properly advance through status types
+	data.Status = append(data.Status, adr.Status{Kind: status, Date: "today"})
+	dbg.Debug("%#v", data)
+}
+
 func main() {
 	fmt.Printf("Help, then [%v]", help)
 
@@ -67,7 +83,8 @@ func main() {
 	}
 	initialize(cfg)
 
-	create(cfg, "New ADR for testing")
+	// create(cfg, "New ADR for testing")
+	changeStatus(cfg, 1, adr.Proposed)
 	/*
 		data := adr.Data{
 			Title: "Use ADRs",
