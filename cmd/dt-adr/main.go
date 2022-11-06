@@ -28,7 +28,7 @@ func main() {
 			createNewAdr(os.Args[2:])
 		default:
 			if len(os.Args) > 2 {
-				changeAdrStatus(os.Args[2:])
+				changeAdrStatus(os.Args[1:])
 			} else {
 				showHelp()
 			}

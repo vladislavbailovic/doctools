@@ -35,6 +35,11 @@ func (x Status) String() string {
 }
 
 func (x Data) UpdateStatus(s StatusType) Data {
+	for _, ss := range x.Status {
+		if ss.Kind == s {
+			return x
+		}
+	}
 	x.Status = append(x.Status, Status{Kind: s, Date: "TODO"})
 	return x
 }

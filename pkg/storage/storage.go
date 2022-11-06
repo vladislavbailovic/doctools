@@ -45,6 +45,10 @@ func (x Repository) ListIDs() ([]string, error) {
 	return ids, err
 }
 
+func (x Repository) PathTo(what Identifier) string {
+	return filepath.Join(x.path, what.GetID()+".md")
+}
+
 func (x Repository) GetByID(id string) ([]byte, error) {
 	return os.ReadFile(filepath.Join(x.path, id+".md"))
 }

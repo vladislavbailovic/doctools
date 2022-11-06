@@ -70,6 +70,10 @@ func (x Repository) NextID() (uint, error) {
 	return max + 1, nil
 }
 
+func (x Repository) PathToADR(data Data) string {
+	return x.PathTo(entity{data: data})
+}
+
 func Save(data Data, repo storage.Saveable) error {
 	if err := repo.Save(entity{data: data}); err != nil {
 		return err
