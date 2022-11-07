@@ -141,6 +141,6 @@ func getParsedData(fname string) (Data, error) {
 
 func getTestContent(fname string) string {
 	cwd, _ := os.Getwd()
-	cnt, _ := os.ReadFile(filepath.Join(cwd, "..", "..", "test-data", fname))
+	cnt, _ := os.ReadFile(filepath.Join(cwd, "..", "..", "testdata", fname))
 	return string(cnt)
 }
