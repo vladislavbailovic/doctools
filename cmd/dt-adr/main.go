@@ -3,7 +3,6 @@ package main
 import (
 	"doctools/pkg/cli"
 	_ "embed"
-	"os"
 )
 
 //go:embed resources/help.txt
@@ -14,23 +13,23 @@ func showHelp() {
 }
 
 func main() {
-	if len(os.Args) < 2 {
+	if !cli.HasSubcommand() {
 		showHelp()
 	} else {
-		switch os.Args[1] {
+		switch cli.Subcommand() {
 		case "-h", "--help", "help":
 			showHelp()
 		case "init":
 			initializeRepo()
 		case "new", "draft", "create":
-			createNewAdr(os.Args[2:])
+			createNewAdr(cli.SubcommandArgs())
 		case "edit":
-			editExisting(os.Args[2:])
+			editExisting(cli.SubcommandArgs())
 		case "list", "ls":
-			listAdrs(os.Args[2:])
+			listAdrs(cli.SubcommandArgs())
 		default:
-			if len(os.Args) > 2 {
-				changeAdrStatus(os.Args[1:])
+			if cli.HasSubcommandArgs() {
+				changeAdrStatus(cli.ArgsFrom(1))
 			} else {
 				showHelp()
 			}

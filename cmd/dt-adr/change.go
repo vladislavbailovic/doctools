@@ -48,5 +48,5 @@ func changeStatus(cfg config.Configuration, number uint, status adr.StatusType) 
 		cli.Cry("error saving updated adr: %v", err)
 		return
 	}
-	cli.Say("Updated ADR status: %#v", updated.Status)
+	cli.Nit("Updated ADR status: %#v", updated.Status)
 }
