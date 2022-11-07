@@ -1,7 +1,7 @@
 package config
 
 import (
-	"doctools/pkg/output"
+	"doctools/pkg/cli"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -23,7 +23,7 @@ func InitializeProject(cfg Configuration) error {
 }
 
 func loadProjectConfiguration() (Configuration, error) {
-	output.Nit("Attempting to load project configuration")
+	cli.Nit("Attempting to load project configuration")
 
 	cfg := Configuration{
 		DocPath: DocumentationPath,

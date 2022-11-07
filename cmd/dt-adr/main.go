@@ -1,7 +1,7 @@
 package main
 
 import (
-	"doctools/pkg/output"
+	"doctools/pkg/cli"
 	_ "embed"
 	"os"
 )
@@ -10,7 +10,7 @@ import (
 var help string
 
 func showHelp() {
-	output.Say(help)
+	cli.Say(help)
 }
 
 func main() {
