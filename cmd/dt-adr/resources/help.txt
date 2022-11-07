@@ -6,10 +6,10 @@ dt-adr [SUBCOMMAND] <ARGS>
 Subcommands:
 	help - this help screen (alias: -h, --help)
 	init - initialize document repository to hold ADR documents
-	list - list ADRs (alias: ls)
+	list [STATUS] - list ADRs, optionally filtered by status (alias: ls)
 	new [TITLE]  - create a new ADR draft (alias: new, create)
 	edit [NUMBER] - edit ADR indicated by number
-	[STATUS VERB] [NUMBER] - change status of the ADR indicated by number
+	[STATUS] [NUMBER] - change status of the ADR indicated by number
 
 Status:
 	- draft, drafted, -d
