@@ -11,12 +11,12 @@ Subcommands:
 	edit [NUMBER] - edit ADR indicated by number
 	[STATUS VERB] [NUMBER] - change status of the ADR indicated by number
 
-Status verbs:
-	- draft
-	- propose
-	- accept
-	- reject
-	- supersede
+Status:
+	- draft, drafted, -d
+	- propose, proposed, -p
+	- accept, accepted, -a
+	- reject, rejected, -r
+	- supersede, superseded, -s
 
 Example usage:
 	dt-adr draft Start using ADRs for the current project

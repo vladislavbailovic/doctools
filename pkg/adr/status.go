@@ -18,15 +18,15 @@ const (
 func StatusTypeFromString(str string) (StatusType, error) {
 	var status StatusType
 	switch strings.ToLower(str) {
-	case "draft", "drafted":
+	case "draft", "drafted", "-d":
 		return Drafted, nil
-	case "propose", "proposed":
+	case "propose", "proposed", "-p":
 		return Proposed, nil
-	case "accept", "accepted":
+	case "accept", "accepted", "-a":
 		return Accepted, nil
-	case "reject", "rejected":
+	case "reject", "rejected", "-r":
 		return Rejected, nil
-	case "supersede", "superseded":
+	case "supersede", "superseded", "-s":
 		return Superseded, nil
 	default:
 		return status, fmt.Errorf("unknown status type: %s", str)

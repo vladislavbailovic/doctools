@@ -30,12 +30,12 @@ func listAdrs(args []string) {
 
 	var list []adr.Data
 
-	if len(args) == 0 {
-		list, err = repo.ListAll()
-		if err != nil {
-			dbg.Error("error listing ADRs: %v", err)
-			return
-		}
+	all, err := repo.ListAll()
+	if err != nil {
+		dbg.Error("error listing ADRs: %v", err)
+		return
+	} else {
+		list = all
 	}
 
 	if len(list) == 0 {
