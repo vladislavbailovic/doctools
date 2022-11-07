@@ -1,15 +1,14 @@
 package config
 
 import (
+	"doctools/pkg/output"
 	"encoding/json"
 	"os"
 	"path/filepath"
-
-	"doctools/pkg/dbg"
 )
 
 func loadGlobalConfiguration() (Configuration, error) {
-	dbg.Debug("Attempting to load global (profile) configuration")
+	output.Nit("Attempting to load global (profile) configuration")
 
 	cfg := Configuration{
 		DocPath: DocumentationPath,
@@ -34,7 +33,7 @@ func loadGlobalConfiguration() (Configuration, error) {
 }
 
 func initializeProfile() (Configuration, error) {
-	dbg.Debug("Initializing global (profile) configuration")
+	output.Nit("Initializing global (profile) configuration")
 
 	cfg := Configuration{
 		DocPath: DocumentationPath,

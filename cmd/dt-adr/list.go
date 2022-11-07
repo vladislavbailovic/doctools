@@ -3,7 +3,7 @@ package main
 import (
 	"doctools/pkg/adr"
 	"doctools/pkg/config"
-	"doctools/pkg/dbg"
+	"doctools/pkg/output"
 	_ "embed"
 	"strings"
 	"text/template"
@@ -18,13 +18,13 @@ var tpl = template.Must(
 func listAdrs(args []string) {
 	cfg, err := config.Load()
 	if err != nil {
-		dbg.Error("%v", err)
+		output.Cry("%v", err)
 		return
 	}
 
 	repo, err := adr.GetRepo(cfg)
 	if err != nil {
-		dbg.Error("error getting adr repo: %v", err)
+		output.Cry("error getting adr repo: %v", err)
 		return
 	}
 
@@ -32,7 +32,7 @@ func listAdrs(args []string) {
 
 	all, err := repo.ListAll()
 	if err != nil {
-		dbg.Error("error listing ADRs: %v", err)
+		output.Cry("error listing ADRs: %v", err)
 		return
 	}
 
@@ -41,7 +41,7 @@ func listAdrs(args []string) {
 	} else {
 		status, err := adr.StatusTypeFromString(args[0])
 		if err != nil {
-			dbg.Error("error filtering ADRs: %v", err)
+			output.Cry("error filtering ADRs: %v", err)
 			return
 		}
 		for _, data := range all {
@@ -53,11 +53,11 @@ func listAdrs(args []string) {
 	}
 
 	if len(list) == 0 {
-		dbg.Debug("No ADRs")
+		output.Say("No ADRs")
 		return
 	}
 
 	buffer := new(strings.Builder)
 	tpl.Execute(buffer, list)
-	dbg.Debug("\n" + strings.TrimSpace(buffer.String()))
+	output.Say(strings.TrimSpace(buffer.String()))
 }

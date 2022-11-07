@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"doctools/pkg/config"
-	"doctools/pkg/dbg"
 )
 
 type Identifier interface {
@@ -60,14 +59,14 @@ func (x Repository) Save(what IdentifiedResource) error {
 
 func (x Repository) Initialize(cfg config.Configuration) error {
 	if err := InitializeProject(cfg); err != nil {
-		return dbg.PathError("initializing storage: %w", err)
+		return PathError("initializing storage: %w", err)
 	}
 
 	repoDir, err := getRepoPath(cfg, x.repo)
 	if err != nil {
 		if nfo, err := os.Stat(repoDir); err != nil {
 			if err := os.Mkdir(repoDir, 0722); err != nil {
-				return dbg.PathError("creating x.repo subdir (%v): %w", repoDir, err)
+				return PathError("creating x.repo subdir (%v): %w", repoDir, err)
 			}
 		} else if nfo.IsDir() {
 			return nil
@@ -75,7 +74,7 @@ func (x Repository) Initialize(cfg config.Configuration) error {
 	}
 
 	if _, err := os.Stat(repoDir); err != nil {
-		return dbg.PathError("x.repo subdir not created (%s): %v", repoDir, err)
+		return PathError("x.repo subdir not created (%s): %v", repoDir, err)
 	}
 
 	return nil
@@ -96,17 +95,17 @@ func InitializeProject(cfg config.Configuration) error {
 	if err != nil {
 		if _, err := os.Stat(docPath); err != nil {
 			if err := os.Mkdir(docPath, 0722); err != nil {
-				return dbg.PathError("doc dir creation (%s): %w", docPath, err)
+				return PathError("doc dir creation (%s): %w", docPath, err)
 			}
 		} else {
-			return dbg.PathError("doc dir resolution (%s): %w", docPath, err)
+			return PathError("doc dir resolution (%s): %w", docPath, err)
 		}
 	}
 
 	if nfo, err := os.Stat(docPath); err != nil {
-		return dbg.PathError("doc path %s missing: %w", docPath, err)
+		return PathError("doc path %s missing: %w", docPath, err)
 	} else if !nfo.IsDir() {
-		return dbg.PathError("%s is not a directory", docPath)
+		return PathError("%s is not a directory", docPath)
 	}
 
 	return nil
@@ -115,14 +114,14 @@ func InitializeProject(cfg config.Configuration) error {
 func getRoot(cfg config.Configuration) (string, error) {
 	currentDir, err := os.Getwd()
 	if err != nil {
-		return currentDir, dbg.PathError("unable to determine working directory: %w", err)
+		return currentDir, PathError("unable to determine working directory: %w", err)
 	}
 	docPath := filepath.Join(currentDir, cfg.DocPath)
 
 	if nfo, err := os.Stat(docPath); err != nil {
-		return docPath, dbg.PathError("doc path %s missing: %w", docPath, err)
+		return docPath, PathError("doc path %s missing: %w", docPath, err)
 	} else if !nfo.IsDir() {
-		return docPath, dbg.PathError("%s is not a directory", docPath)
+		return docPath, PathError("%s is not a directory", docPath)
 	}
 
 	return docPath, nil
@@ -131,14 +130,14 @@ func getRoot(cfg config.Configuration) (string, error) {
 func getRepoPath(cfg config.Configuration, repo string) (string, error) {
 	docsDir, err := getRoot(cfg)
 	if err != nil {
-		return docsDir, dbg.PathError("getting repo root for %s: %w", repo, err)
+		return docsDir, PathError("getting repo root for %s: %w", repo, err)
 	}
 	repoDir := filepath.Join(docsDir, repo)
 
 	if nfo, err := os.Stat(repoDir); err != nil {
-		return repoDir, dbg.PathError("doc path %s missing: %w", repoDir, err)
+		return repoDir, PathError("doc path %s missing: %w", repoDir, err)
 	} else if !nfo.IsDir() {
-		return repoDir, dbg.PathError("%s is not a directory", repoDir)
+		return repoDir, PathError("%s is not a directory", repoDir)
 	}
 
 	return repoDir, nil
