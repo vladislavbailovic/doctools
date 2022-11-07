@@ -5,24 +5,12 @@ import (
 	"doctools/pkg/config"
 	"doctools/pkg/dbg"
 	"strconv"
-	"strings"
 )
 
 func changeAdrStatus(args []string) {
-	var status adr.StatusType
-	switch strings.ToLower(args[0]) {
-	case "draft":
-		status = adr.Drafted
-	case "propose":
-		status = adr.Proposed
-	case "accept":
-		status = adr.Accepted
-	case "reject":
-		status = adr.Rejected
-	case "supersede":
-		status = adr.Superseded
-	default:
-		dbg.Error("unknown new status: %v", args[0])
+	status, err := adr.StatusTypeFromString(args[0])
+	if err != nil {
+		dbg.Error("%v", err)
 		showHelp()
 		return
 	}

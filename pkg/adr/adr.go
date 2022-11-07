@@ -70,6 +70,29 @@ func (x Repository) NextID() (uint, error) {
 	return max + 1, nil
 }
 
+func (x Repository) ListAll() ([]Data, error) {
+	var list []Data
+
+	ids, err := x.ListIDs()
+	if err != nil {
+		return list, err
+	}
+
+	for _, id := range ids {
+		raw, err := x.GetByID(id)
+		if err != nil {
+			return list, err
+		}
+		item, err := parseData(string(raw))
+		if err != nil {
+			return list, err
+		}
+		list = append(list, item)
+	}
+
+	return list, nil
+}
+
 func (x Repository) PathToADR(data Data) string {
 	return x.PathTo(entity{data: data})
 }

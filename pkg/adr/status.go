@@ -15,6 +15,24 @@ const (
 	Superseded StatusType = "Superseded"
 )
 
+func StatusTypeFromString(str string) (StatusType, error) {
+	var status StatusType
+	switch strings.ToLower(str) {
+	case "draft", "drafted":
+		return Drafted, nil
+	case "propose", "proposed":
+		return Proposed, nil
+	case "accept", "accepted":
+		return Accepted, nil
+	case "reject", "rejected":
+		return Rejected, nil
+	case "supersede", "superseded":
+		return Superseded, nil
+	default:
+		return status, fmt.Errorf("unknown status type: %s", str)
+	}
+}
+
 type Status struct {
 	Kind StatusType
 	Date string

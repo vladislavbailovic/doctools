@@ -1,0 +1,5 @@
+
+{{ range . }}{{ .Number }}. {{ .Title }}
+	{{ range .Status }}{{ .Date }}: {{ .Kind }}
+	{{ end }}
+{{ end }}
