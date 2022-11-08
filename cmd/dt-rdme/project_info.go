@@ -12,6 +12,22 @@ type projectInfo struct {
 	description string
 }
 
+func (x projectInfo) hasFiles(expr string) bool {
+	return len(x.listFiles(expr)) > 0
+}
+
+func (x projectInfo) listFiles(expr string) []string {
+	var result []string
+	if list, err := filepath.Glob(x.getPath(expr)); err == nil {
+		for _, f := range list {
+			if relpath, err := filepath.Rel(x.path, f); err == nil {
+				result = append(result, relpath)
+			}
+		}
+	}
+	return result
+}
+
 func (x projectInfo) hasFile(path string) bool {
 	if "" == x.path {
 		return false

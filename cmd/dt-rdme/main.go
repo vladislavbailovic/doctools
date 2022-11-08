@@ -35,8 +35,9 @@ func main() {
 		}
 	}
 
+	nfo, err := getReadme("testdata/wp-plugin")
 	// nfo, err := getReadme("testdata")
-	nfo, err := getReadme(".")
+	// nfo, err := getReadme(".")
 	if err != nil {
 		cli.Cry("%v", err)
 	}
@@ -58,6 +59,7 @@ func getReadme(path string) (readme, error) {
 
 func detectProjectMeta(p projectInfo) (readme, error) {
 	result := readme{}
+	basedir := filepath.Base(p.path)
 
 	if p.hasFile("package.json") {
 		pkg := projectPackageJson(p)
@@ -80,7 +82,9 @@ func detectProjectMeta(p projectInfo) (readme, error) {
 				result.addSection(newRunSection(bin))
 			}
 		}
-	} else if p.hasFile("go.mod") {
+	}
+
+	if p.hasFile("go.mod") {
 		mod := projectModuleFile(p)
 		result.Name = mod.module
 
@@ -96,8 +100,24 @@ func detectProjectMeta(p projectInfo) (readme, error) {
 		}
 	}
 
+	if p.hasFiles("*.php") {
+		plug := projectPhpPlugin(p)
+		if plug.plugin != "" {
+			result.Name = plug.name
+			result.Description = plug.description
+
+			result.addSection(newBuildSection(fmt.Sprintf("wp plugin activate %s/%s", basedir, plug.plugin)))
+		}
+		if p.hasFile("phpunit.xml") {
+			result.addSection(newTestSection("phpunit -c phpunit.xml"))
+		}
+		if p.hasFile("phpcs.ruleset.xml") {
+			result.addSection(newTestSection("phpcs $(find . -type f -name '*.php') --standard=./phpcs.ruleset.xml"))
+		}
+	}
+
 	if result.Name == "" {
-		result.Name = filepath.Base(p.path)
+		result.Name = basedir
 	}
 
 	return result, nil

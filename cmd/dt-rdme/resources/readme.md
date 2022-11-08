@@ -5,13 +5,14 @@
 {{ range $title, $commands := .Sections }}
 	- [{{ $title }}](#{{ $title | slugify }}){{ end }}
 
-{{ end }}{{ range $title, $commands := .Sections }}
-### {{ $title }}
-{{ range $commands }}
-```
-$ {{ . }}
- 
-```
 {{ end }}
+## Quick Start
+
+{{ range $title, $commands := .Sections }}
+### {{ $title }}
+
+```sh{{ range $commands }}
+$ {{ . }}{{ end }}
+```
 
 {{ end }}

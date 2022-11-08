@@ -39,3 +39,15 @@ func Test_GetFile_ReturnsBytes(t *testing.T) {
 		t.Fatalf("this go.mod file should not be empty: %v", mod)
 	}
 }
+
+func Test_GetPaths_HasPaths(t *testing.T) {
+	nfo := newProjectInfo("../../testdata/wp-plugin")
+	list := nfo.listFiles("*.xml")
+	if len(list) != 2 {
+		t.Fatalf("expected two XML files, got multiple: %v", list)
+	}
+
+	if !nfo.hasFiles("*.php") {
+		t.Fatal("expected to recognize PHP file presence")
+	}
+}
