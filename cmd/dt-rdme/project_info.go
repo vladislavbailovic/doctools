@@ -4,7 +4,10 @@ import (
 	"doctools/pkg/cli"
 	"os"
 	"path/filepath"
+	"strings"
 )
+
+const doubleStarMaxGlobDepth int = 5
 
 type projectInfo struct {
 	path        string
@@ -17,6 +20,20 @@ func (x projectInfo) hasFiles(expr string) bool {
 }
 
 func (x projectInfo) listFiles(expr string) []string {
+	if strings.Contains(expr, "**") {
+		result := x._listFiles(strings.Replace(expr, "**", "", 1))
+		levels := make([]string, 0, doubleStarMaxGlobDepth)
+		for i := 0; i < doubleStarMaxGlobDepth; i++ {
+			levels = append(levels, "*")
+			rpl := filepath.Join(levels...)
+			result = append(result, x._listFiles(strings.Replace(expr, "**", rpl, 1))...)
+		}
+		return result
+	}
+	return x._listFiles(expr)
+}
+
+func (x projectInfo) _listFiles(expr string) []string {
 	var result []string
 	if list, err := filepath.Glob(x.getPath(expr)); err == nil {
 		for _, f := range list {

@@ -44,10 +44,31 @@ func Test_GetPaths_HasPaths(t *testing.T) {
 	nfo := newProjectInfo("../../testdata/wp-plugin")
 	list := nfo.listFiles("*.xml")
 	if len(list) != 2 {
-		t.Fatalf("expected two XML files, got multiple: %v", list)
+		t.Fatalf("expected two XML files, got: %v", list)
 	}
 
 	if !nfo.hasFiles("*.php") {
 		t.Fatal("expected to recognize PHP file presence")
+	}
+}
+
+func Test_ListFiles_RegularGlob(t *testing.T) {
+	nfo := newProjectInfo("../../testdata/wp-plugin")
+	list := nfo.listFiles("*.xml")
+	if len(list) != 2 {
+		t.Fatalf("expected two XML files, got: %v", list)
+	}
+}
+
+func Test_ListFiles_DoubleStarGlob(t *testing.T) {
+	nfo := newProjectInfo("../../testdata")
+	list := nfo.listFiles("*/Dockerfile")
+	if len(list) != 0 {
+		t.Fatalf("expected zero top-level Dockerfiles without double star, got: %v", list)
+	}
+
+	list = nfo.listFiles("**/Dockerfile")
+	if len(list) != 3 {
+		t.Fatalf("expected three Dockerfiles with double star, got: %v", list)
 	}
 }
