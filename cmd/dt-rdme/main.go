@@ -23,38 +23,36 @@ func main() {
 	if !cli.HasSubcommand() {
 		cli.Say("HALP!")
 	} else {
+		proj := newProjectInfo("testdata")
 		switch cli.Subcommand() {
 		case "new", "init":
-			cli.Nit("Gonna create a new README file")
+			nfo, err := detectProjectMeta(proj)
+			if err != nil {
+				cli.Cry("%v", err)
+			}
+			buffer := new(strings.Builder)
+			tpl.Execute(buffer, nfo)
+			cli.Say(strings.TrimSpace(buffer.String()))
 		case "update":
 			cli.Nit("Gonna update existing readme")
 			cli.Nit("This is going to be done by adding any newly detected sections and TOC")
 			cli.Nit("while preserving what's already in there")
+			path, err := proj.getFile("README.md")
+			if err != nil {
+				cli.Cry("%v", err)
+				return
+			}
+			if err := updateReadmeToc(string(path)); err != nil {
+				cli.Cry("%v", err)
+			}
 		default:
 			cli.Say("HALP!")
 		}
 	}
-
-	// nfo, err := getReadme("testdata/wp-plugin")
-	nfo, err := getReadme("testdata")
-	// nfo, err := getReadme(".")
-	if err != nil {
-		cli.Cry("%v", err)
-	}
-	// cli.Say("%#v", nfo)
-	buffer := new(strings.Builder)
-	tpl.Execute(buffer, nfo)
-	cli.Say(strings.TrimSpace(buffer.String()))
 }
 
-func getReadme(path string) (readme, error) {
-	current := newProjectInfo(path)
-	readme, err := detectProjectMeta(current)
-	if err != nil {
-		return readme, err
-	}
-
-	return readme, nil
+func updateReadmeToc(path string) error {
+	return nil
 }
 
 func detectProjectMeta(p projectInfo) (readme, error) {
