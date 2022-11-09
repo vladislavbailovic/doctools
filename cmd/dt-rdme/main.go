@@ -35,8 +35,8 @@ func main() {
 		}
 	}
 
-	nfo, err := getReadme("testdata/wp-plugin")
-	// nfo, err := getReadme("testdata")
+	// nfo, err := getReadme("testdata/wp-plugin")
+	nfo, err := getReadme("testdata")
 	// nfo, err := getReadme(".")
 	if err != nil {
 		cli.Cry("%v", err)
@@ -113,6 +113,14 @@ func detectProjectMeta(p projectInfo) (readme, error) {
 		}
 		if p.hasFile("phpcs.ruleset.xml") {
 			result.addSection(newTestSection("phpcs $(find . -type f -name '*.php') --standard=./phpcs.ruleset.xml"))
+		}
+	}
+
+	if p.hasFiles("**/Dockerfile") {
+		for _, dockerfile := range p.listFiles("**/Dockerfile") {
+			for _, sect := range newDockerSections(dockerfile) {
+				result.addSection(sect)
+			}
 		}
 	}
 

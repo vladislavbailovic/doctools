@@ -36,12 +36,13 @@ func newTestSection(content string) section {
 }
 
 func newDockerSections(dockerfile string) []section {
-	fpath := filepath.Dir(dockerfile)
-	if "" == fpath {
-		fpath = "."
+	name := filepath.Base(filepath.Dir(dockerfile))
+	if "" == name || "." == name {
+		name = "latest"
+		dockerfile = "."
 	}
 	return []section{
-		newBuildSection(fmt.Sprintf("docker build %s -t latest", fpath)),
+		newBuildSection(fmt.Sprintf("docker build %s -t %s", dockerfile, name)),
 		newRunSection("docker run latest"),
 	}
 }
