@@ -12,19 +12,28 @@ import (
 )
 
 //go:embed resources/readme.md
-var templateSource string
-var tpl = template.Must(
+var readmeTplSource string
+var readmeTemplate = template.Must(
 	template.New("README").Funcs(template.FuncMap{
 		"slugify": markdown.SlugifyHeader,
-	}).Parse(templateSource),
+	}).Parse(readmeTplSource),
 )
+
+//go:embed resources/help.txt
+var help string
+
+func showHelp() {
+	cli.Say(help)
+}
 
 func main() {
 	if !cli.HasSubcommand() {
-		cli.Say("HALP!")
+		showHelp()
 	} else {
 		proj := newProjectInfo(".")
 		switch cli.Subcommand() {
+		case "-h", "--help", "help":
+			showHelp()
 		case "new", "init":
 			_, err := proj.getFile("README.md")
 			if err == nil && !cli.HasFlag("-f") && !cli.HasFlag("--force") {
@@ -48,7 +57,7 @@ func main() {
 				cli.Cry("%v", err)
 			}
 		default:
-			cli.Say("HALP!")
+			showHelp()
 		}
 	}
 }
@@ -60,7 +69,7 @@ func initReadme(p projectInfo) error {
 	}
 
 	buffer := new(strings.Builder)
-	tpl.Execute(buffer, nfo)
+	readmeTemplate.Execute(buffer, nfo)
 	if err := os.WriteFile("README.md", []byte(buffer.String()), 0622); err != nil {
 		return err
 	}

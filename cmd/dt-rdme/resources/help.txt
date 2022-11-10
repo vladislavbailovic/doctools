@@ -1,0 +1,9 @@
+Initialize and manage project top-level README.md
+
+Usage:
+dt-rdme [SUBCOMMAND] <ARGS>
+
+Subcommands:
+	help - this help screen (alias: -h, --help)
+	init [-f/--force] - initialize README.md (alias: new)
+	toc - update readme table of contents (alias: update)
