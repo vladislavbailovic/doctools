@@ -2,8 +2,10 @@ package main
 
 import (
 	"doctools/pkg/cli"
+	"doctools/pkg/markdown"
 	_ "embed"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -13,9 +15,7 @@ import (
 var templateSource string
 var tpl = template.Must(
 	template.New("README").Funcs(template.FuncMap{
-		"slugify": func(title string) string {
-			return strings.ToLower(strings.ReplaceAll(title, " ", "-"))
-		},
+		"slugify": markdown.SlugifyHeader,
 	}).Parse(templateSource),
 )
 
@@ -26,14 +26,17 @@ func main() {
 		proj := newProjectInfo("testdata")
 		switch cli.Subcommand() {
 		case "new", "init":
-			nfo, err := detectProjectMeta(proj)
-			if err != nil {
+			_, err := os.Stat("README.md")
+			if err == nil && !cli.HasFlag("-f") && !cli.HasFlag("--force") {
+				cli.Cry("README.md already exists")
+				cli.Say("You can forcefully overwrite it, though (-f/--force)")
+				return
+			}
+
+			if err := initReadme(proj); err != nil {
 				cli.Cry("%v", err)
 			}
-			buffer := new(strings.Builder)
-			tpl.Execute(buffer, nfo)
-			cli.Say(strings.TrimSpace(buffer.String()))
-		case "update":
+		case "update", "toc":
 			cli.Nit("Gonna update existing readme")
 			cli.Nit("This is going to be done by adding any newly detected sections and TOC")
 			cli.Nit("while preserving what's already in there")
@@ -49,6 +52,20 @@ func main() {
 			cli.Say("HALP!")
 		}
 	}
+}
+
+func initReadme(p projectInfo) error {
+	nfo, err := detectProjectMeta(p)
+	if err != nil {
+		return err
+	}
+
+	buffer := new(strings.Builder)
+	tpl.Execute(buffer, nfo)
+	if err := os.WriteFile("README.md", []byte(buffer.String()), 0622); err != nil {
+		return err
+	}
+	return nil
 }
 
 func updateReadmeToc(path string) error {

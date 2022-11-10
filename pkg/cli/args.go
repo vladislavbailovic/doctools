@@ -2,6 +2,15 @@ package cli
 
 import "os"
 
+func HasFlag(flag string) bool {
+	for _, a := range os.Args {
+		if a == flag {
+			return true
+		}
+	}
+	return false
+}
+
 func HasSubcommand() bool {
 	return len(os.Args) > 1
 }
