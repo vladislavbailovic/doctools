@@ -25,6 +25,26 @@ func (x TOCItem) String() string {
 		x.caption, x.slug)
 }
 
+type TOC struct {
+	items []TOCItem
+}
+
+func (x TOC) headerText() string {
+	return "Table of Contents"
+}
+
+func (x TOC) Header() string {
+	return fmt.Sprintf("## %s", x.headerText())
+}
+
+func (x *TOC) AddItem(item TOCItem) {
+	x.items = append(x.items, item)
+}
+
+func (x TOC) IsTOCHeader(header string) bool {
+	return strings.ToLower(markdownHeaderText(header)) == strings.ToLower(x.headerText())
+}
+
 func replaceMarkdownTOC(lines []string) []string {
 	headers := getMarkdownHeaders(lines)
 
