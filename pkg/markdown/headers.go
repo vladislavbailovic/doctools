@@ -2,7 +2,6 @@ package markdown
 
 import (
 	"strings"
-	"unicode"
 )
 
 type HeaderType uint8
@@ -108,15 +107,4 @@ func getMarkdownHeaders(lines []string) []headerMarker {
 
 func markdownHeaderText(ttl string) string {
 	return strings.TrimSpace(strings.TrimLeft(ttl, "#"))
-}
-
-func slugifyMarkdownHeader(ttl string) string {
-	clean := ""
-	for _, c := range strings.ToLower(markdownHeaderText(ttl)) {
-		if !unicode.IsLower(c) && !unicode.IsNumber(c) && c != ' ' && c != '-' {
-			continue
-		}
-		clean += string(c)
-	}
-	return strings.ReplaceAll(clean, " ", "-")
 }

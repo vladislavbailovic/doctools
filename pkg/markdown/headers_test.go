@@ -151,16 +151,3 @@ func Test_md_markdownHeaderText(t *testing.T) {
 		}
 	}
 }
-
-func Test_md_slugifyMarkdownHeader(t *testing.T) {
-	suite := map[string]string{
-		"C++":         "c",
-		"test / test": "test--test",
-	}
-	for test, expected := range suite {
-		actual := slugifyMarkdownHeader(test)
-		if actual != expected {
-			t.Fatalf("[%s]: expected [%s], got [%s]", test, expected, actual)
-		}
-	}
-}

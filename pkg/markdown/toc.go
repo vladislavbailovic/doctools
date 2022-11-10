@@ -3,6 +3,7 @@ package markdown
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 type TOCItem struct {
@@ -15,7 +16,7 @@ func newMarkdownHeaderTOCItem(hdLevel HeaderLevel, text string) TOCItem {
 	return TOCItem{
 		level:   int(hdLevel) - 1,
 		caption: markdownHeaderText(text),
-		slug:    slugifyMarkdownHeader(text),
+		slug:    SlugifyHeader(text),
 	}
 }
 
@@ -45,61 +46,17 @@ func (x TOC) IsTOCHeader(header string) bool {
 	return strings.ToLower(markdownHeaderText(header)) == strings.ToLower(x.headerText())
 }
 
-func replaceMarkdownTOC(lines []string) []string {
-	headers := getMarkdownHeaders(lines)
-
-	headingContent := 0
-	afterHeading := 0
-	tocContent := 0
-	afterToc := 0
-	for _, h := range headers {
-		if h.level == Heading && headingContent == 0 {
-			headingContent = h.contentPos
+func Slugify(what string) string {
+	clean := ""
+	for _, c := range strings.ToLower(what) {
+		if !unicode.IsLower(c) && !unicode.IsNumber(c) && c != ' ' && c != '-' {
 			continue
 		}
-		if headingContent > 0 && afterHeading == 0 {
-			afterHeading = h.pos
-		}
-		if headingContent > 0 && tocContent > 0 {
-			afterToc = h.pos
-			break
-		}
-
-		if strings.Contains(strings.ToLower(lines[h.pos]), "table of content") {
-			tocContent = h.pos
-		}
+		clean += string(c)
 	}
+	return strings.ReplaceAll(clean, " ", "-")
+}
 
-	start := 0
-	end := 0
-	if tocContent > 0 && afterToc > 0 {
-		start = tocContent
-		end = afterToc
-	} else {
-		start = afterHeading
-		end = afterHeading
-	}
-
-	result := []string{}
-	result = append(result, lines[0:start]...)
-	result = append(result, "## Table of Contents")
-	result = append(result, "")
-
-	for _, h := range headers {
-		if h.contentPos == headingContent {
-			continue
-		}
-		if strings.Contains(strings.ToLower(lines[h.pos]), "table of content") {
-			continue
-		}
-
-		item := newMarkdownHeaderTOCItem(h.level, lines[h.pos])
-		result = append(result, item.String())
-	}
-
-	result = append(result, "")
-	result = append(result, "")
-
-	result = append(result, lines[end:]...)
-	return result
+func SlugifyHeader(ttl string) string {
+	return Slugify(markdownHeaderText(ttl))
 }
