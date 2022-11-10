@@ -69,8 +69,14 @@ func (x Markdown) ExtractTOC() TOC {
 	return toc
 }
 
+func (x Markdown) UpdateTOC() Markdown {
+	toc := x.ExtractTOC()
+	return x.ReplaceTOCWith(toc)
+}
+
 func (x Markdown) ReplaceTOCWith(toc TOC) Markdown {
-	start := x.findHeaderAfter(-1, HeaderAny).contentPos
+	first := x.findHeaderAfter(-1, HeaderAny)
+	start := first.contentPos
 	end := start
 	if start > 0 {
 		pos := start
@@ -81,11 +87,16 @@ func (x Markdown) ReplaceTOCWith(toc TOC) Markdown {
 				break
 			}
 		}
-		end = x.FindHeaderAfter(start, HeaderAny)
+		if start != first.contentPos {
+			end = x.FindHeaderAfter(start, HeaderAny)
+		}
 	}
 
 	result := []string{}
 	result = append(result, x.lines[0:start]...)
+	if end == first.contentPos {
+		result = append(result, "")
+	}
 	result = append(result, toc.Header())
 	result = append(result, "")
 	for _, item := range toc.items {

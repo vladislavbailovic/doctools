@@ -99,3 +99,16 @@ func Test_md_ReplaceTOCWith_MadeUpToc(t *testing.T) {
 		t.Fatalf("TOC replacement failure!\nexpect: %#v\nactual: %#v", toc, newToc)
 	}
 }
+
+func Test_md_UpdateTOC_NoToc(t *testing.T) {
+	md := NewMarkdownFromSource(getTestFile("testdata/example-markdown/README-vimspector.md"))
+	updated := md.UpdateTOC()
+
+	if !updated.HasTOC() {
+		t.Log(updated)
+		t.Fatal("TOC replacement resulted with no TOC")
+	}
+
+	// 	t.Log("\n--------------\n" + strings.Join(updated.lines, "\n"))
+	// 	t.Fatal("dsfdsf")
+}
