@@ -107,38 +107,6 @@ func getMarkdownHeaders(lines []string) []headerMarker {
 	return headers
 }
 
-func detectMarkdownTOC(lines []string) []int {
-	headers := getMarkdownHeaders(lines)
-
-	headingContent := 0
-	afterHeading := 0
-	tocContent := 0
-	afterToc := 0
-	for _, h := range headers {
-		if h.level == Heading {
-			headingContent = h.contentPos
-			continue
-		}
-		if headingContent > 0 && afterHeading == 0 {
-			afterHeading = h.pos
-		}
-		if headingContent > 0 && tocContent > 0 {
-			afterToc = h.pos
-			break
-		}
-
-		if strings.Contains(strings.ToLower(lines[h.pos]), "table of content") {
-			tocContent = h.pos
-		}
-	}
-
-	if tocContent > 0 && afterToc > 0 {
-		return []int{tocContent, afterToc}
-	}
-
-	return []int{afterHeading, afterHeading}
-}
-
 func replaceMarkdownTOC(lines []string) []string {
 	headers := getMarkdownHeaders(lines)
 
@@ -187,11 +155,8 @@ func replaceMarkdownTOC(lines []string) []string {
 			continue
 		}
 
-		slugified := slugifyMarkdownHeader(lines[h.pos])
-		tocLine := fmt.Sprintf("%s- [%s](#%s)",
-			strings.Repeat("\t", int(h.level)-1),
-			markdownHeaderText(lines[h.pos]), slugified)
-		result = append(result, tocLine)
+		item := newMarkdownHeaderTOCItem(h.level, lines[h.pos])
+		result = append(result, item.String())
 	}
 
 	result = append(result, "")
@@ -199,6 +164,26 @@ func replaceMarkdownTOC(lines []string) []string {
 
 	result = append(result, lines[end:]...)
 	return result
+}
+
+type TOCItem struct {
+	caption string
+	slug    string
+	level   int
+}
+
+func newMarkdownHeaderTOCItem(hdLevel HeaderLevel, text string) TOCItem {
+	return TOCItem{
+		level:   int(hdLevel) - 1,
+		caption: markdownHeaderText(text),
+		slug:    slugifyMarkdownHeader(text),
+	}
+}
+
+func (x TOCItem) String() string {
+	return fmt.Sprintf("%s- [%s](#%s)",
+		strings.Repeat("\t", x.level),
+		x.caption, x.slug)
 }
 
 func markdownHeaderText(ttl string) string {

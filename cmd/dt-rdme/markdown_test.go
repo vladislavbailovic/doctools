@@ -138,22 +138,6 @@ func Test_md_getMarkdownHeaders_DashHeaders(t *testing.T) {
 	}
 }
 
-func Test_md_detectMarkdownTOC(t *testing.T) {
-	lines := strings.Split(getTestFile("testdata/example-markdown/generated-1.md"), "\n")
-	result := detectMarkdownTOC(lines)
-
-	if result[0] != 4 && result[1] != 10 {
-		t.Fatalf("error detecting TOC in generated: %#v", result)
-	}
-
-	lines = strings.Split(getTestFile("testdata/example-markdown/README-vimspector.md"), "\n")
-	result = detectMarkdownTOC(lines)
-
-	if result[0] != 125 && result[1] != 125 {
-		t.Fatalf("error detecting TOC in generated: %#v", result)
-	}
-}
-
 func Test_md_markdownHeaderText(t *testing.T) {
 	suite := map[string]string{
 		"# test":    "test",
@@ -182,8 +166,8 @@ func Test_md_slugifyMarkdownHeader(t *testing.T) {
 }
 
 func Test_md_replaceMarkdownTOC(t *testing.T) {
-	// lines := strings.Split(getTestFile("testdata/example-markdown/generated-1.md"), "\n")
-	lines := strings.Split(getTestFile("testdata/example-markdown/README-vimspector.md"), "\n")
+	lines := strings.Split(getTestFile("testdata/example-markdown/generated-1.md"), "\n")
+	// lines := strings.Split(getTestFile("testdata/example-markdown/README-vimspector.md"), "\n")
 	result := replaceMarkdownTOC(lines)
 
 	t.Log(strings.Join(result, "\n"))
