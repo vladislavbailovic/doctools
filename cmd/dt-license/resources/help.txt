@@ -1,0 +1,25 @@
+Initialize and manage project license
+
+Usage:
+dt-license [LICENSE] <ARGS>
+
+Licenses:
+	mit
+	gpl3
+	lgpl3 (alias: lgpl)
+	bsd3 (alias: bsd)
+	bsd2
+	unlicense
+	wtf
+	gpl2 (alias: gpl)
+	
+
+Arguments
+	help - this help screen (alias: -h, --help)
+	print - print license to stdout rather than saving it to LICENSE.txt (alias: -p, --print)
+	-f/--force - force overwriting of LICENSE.txt file with new license
+
+Example usage:
+	dt-license wtf
+	dt-license wtf --force
+	dt-license wtf print
