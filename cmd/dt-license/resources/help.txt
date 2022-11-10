@@ -12,7 +12,6 @@ Licenses:
 	unlicense
 	wtf
 	gpl2 (alias: gpl)
-	
 
 Arguments
 	help - this help screen (alias: -h, --help)

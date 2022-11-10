@@ -38,6 +38,12 @@ func main() {
 				cli.Cry("error executing: %v", err)
 				return
 			}
+		case "lcs", "license":
+			cmd := cli.Run(filepath.Join(root, "./dt-license"), cli.SubcommandArgs()...)
+			if err := cmd.Wait(); err != nil {
+				cli.Cry("error executing: %v", err)
+				return
+			}
 		default:
 			showHelp()
 		}

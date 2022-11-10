@@ -7,6 +7,7 @@ Tools:
 	help - this help screen (alias: -h, --help)
 	adr - create and manage ADRs (Architecture Decision Records)
 	rdme - initialize and manage project top-level README.md (alias: readme)
+	lcs - initialize and manage project LICENSE.txt (alias: license)
 
 For specific tool help, try dt tool help. For an example:
 	dt adr help
