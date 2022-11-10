@@ -21,6 +21,10 @@ func NewMarkdownFromSource(src string) Markdown {
 	return NewMarkdownFromLines(lines)
 }
 
+func (x Markdown) String() string {
+	return strings.TrimSpace(strings.Join(x.lines, "\n"))
+}
+
 func (x Markdown) FindHeader(lvl HeaderLevel) int {
 	return x.FindHeaderAfter(-1, lvl)
 }

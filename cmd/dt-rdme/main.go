@@ -23,10 +23,10 @@ func main() {
 	if !cli.HasSubcommand() {
 		cli.Say("HALP!")
 	} else {
-		proj := newProjectInfo("testdata")
+		proj := newProjectInfo(".")
 		switch cli.Subcommand() {
 		case "new", "init":
-			_, err := os.Stat("README.md")
+			_, err := proj.getFile("README.md")
 			if err == nil && !cli.HasFlag("-f") && !cli.HasFlag("--force") {
 				cli.Cry("README.md already exists")
 				cli.Say("You can forcefully overwrite it, though (-f/--force)")
@@ -37,13 +37,12 @@ func main() {
 				cli.Cry("%v", err)
 			}
 		case "update", "toc":
-			cli.Nit("Gonna update existing readme")
-			cli.Nit("This is going to be done by adding any newly detected sections and TOC")
-			cli.Nit("while preserving what's already in there")
 			path, err := proj.getFile("README.md")
 			if err != nil {
-				cli.Cry("%v", err)
-				return
+				if err := initReadme(proj); err != nil {
+					cli.Cry("%v", err)
+					return
+				}
 			}
 			if err := updateReadmeToc(string(path)); err != nil {
 				cli.Cry("%v", err)
@@ -69,6 +68,11 @@ func initReadme(p projectInfo) error {
 }
 
 func updateReadmeToc(path string) error {
+	md := markdown.NewMarkdownFromSource(path)
+	updated := md.UpdateTOC()
+	if err := os.WriteFile("README.md", []byte(updated.String()), 0622); err != nil {
+		return err
+	}
 	return nil
 }
 
