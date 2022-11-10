@@ -49,9 +49,9 @@ func Test_md_ExtractTOC_NoToc(t *testing.T) {
 	md := NewMarkdownFromSource(getTestFile("testdata/example-markdown/README-vimspector.md"))
 	toc := md.ExtractTOC()
 
-	if len(toc.items) != 96 {
+	if len(toc.items) != 95 {
 		t.Log(toc)
-		t.Fatalf("expected 96 TOC items, got %d", len(toc.items))
+		t.Fatalf("expected 95 TOC items, got %d", len(toc.items))
 	}
 }
 
@@ -59,9 +59,9 @@ func Test_md_ExtractTOC_WithToc(t *testing.T) {
 	md := NewMarkdownFromSource(getTestFile("testdata/example-markdown/generated-1.md"))
 	toc := md.ExtractTOC()
 
-	if len(toc.items) != 5 {
+	if len(toc.items) != 4 {
 		t.Log(toc)
-		t.Fatalf("expected 5 TOC items, got %d", len(toc.items))
+		t.Fatalf("expected 4 TOC items, got %d", len(toc.items))
 	}
 }
 
@@ -108,7 +108,4 @@ func Test_md_UpdateTOC_NoToc(t *testing.T) {
 		t.Log(updated)
 		t.Fatal("TOC replacement resulted with no TOC")
 	}
-
-	// 	t.Log("\n--------------\n" + strings.Join(updated.lines, "\n"))
-	// 	t.Fatal("dsfdsf")
 }

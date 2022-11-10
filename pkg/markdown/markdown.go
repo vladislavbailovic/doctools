@@ -58,8 +58,12 @@ func (x Markdown) HasTOC() bool {
 
 func (x Markdown) ExtractTOC() TOC {
 	toc := TOC{}
+	first := x.findHeaderAfter(-1, Heading)
 
 	for _, h := range x.headers {
+		if h.pos == first.pos {
+			continue // Omit top-level heading
+		}
 		if toc.IsTOCHeader(x.lines[h.pos]) {
 			continue
 		}
