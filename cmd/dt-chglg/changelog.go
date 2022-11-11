@@ -24,13 +24,18 @@ func fromChangesets(changes []changeset) changelog {
 }
 
 func fromFile(path string) changelog {
-	changes := []changeset{}
-
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return changelog{}
 	}
-	lines := strings.Split(string(raw), "\n")
+
+	return parseChangelog(string(raw))
+}
+
+func parseChangelog(raw string) changelog {
+	changes := []changeset{}
+
+	lines := strings.Split(raw, "\n")
 	md := markdown.NewMarkdownFromLines(lines)
 
 	pos := md.FindHeader(markdown.HeaderAny)
@@ -66,4 +71,12 @@ func (x changelog) updateFrom(wip changelog) changelog {
 		result = append(result, set)
 	}
 	return fromChangesets(result)
+}
+
+func (x changelog) String() string {
+	result := make([]string, len(x.changes), len(x.changes))
+	for i, set := range x.changes {
+		result[i] = set.String()
+	}
+	return strings.Join(result, "\n\n\n")
 }

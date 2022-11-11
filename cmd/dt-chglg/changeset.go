@@ -1,17 +1,30 @@
 package main
 
-import "doctools/pkg/markdown"
-
-func reverse(input []changeset) []changeset {
-	for i, j := 0, len(input)-1; i < j; i, j = i+1, j-1 {
-		input[i], input[j] = input[j], input[i]
-	}
-	return input
-}
+import (
+	"doctools/pkg/markdown"
+	"strings"
+)
 
 type changeset struct {
 	name    string
 	changes []string
+}
+
+func (x changeset) hasChanges() bool {
+	return len(x.changes) > 0
+}
+
+func (x changeset) String() string {
+	result := make([]string, len(x.changes)+2, len(x.changes)+2)
+	result[0] = markdown.HeaderLevel3.String() + " " + x.name
+	result[1] = ""
+
+	for i, chg := range x.changes {
+		//result[i+2] = markdown.Listify(chg, 0)
+		result[i+2] = chg
+	}
+
+	return strings.Join(result, "\n")
 }
 
 func getChangesets() []changeset {
@@ -32,10 +45,6 @@ func getChangesets() []changeset {
 	}
 
 	return reverse(result)
-}
-
-func (x changeset) hasChanges() bool {
-	return len(x.changes) > 0
 }
 
 func getChangeset(since, now string) changeset {
@@ -82,4 +91,11 @@ func getChangesBetween(earliest, oldest string) []string {
 		result = append(result, cmt.title)
 	}
 	return result
+}
+
+func reverse(input []changeset) []changeset {
+	for i, j := 0, len(input)-1; i < j; i, j = i+1, j-1 {
+		input[i], input[j] = input[j], input[i]
+	}
+	return input
 }

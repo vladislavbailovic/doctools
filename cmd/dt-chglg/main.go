@@ -7,8 +7,9 @@ import (
 func main() {
 	known := fromFile("CHANGELOG.md")
 	wip := fromRepo()
-	changeset := known.updateFrom(wip)
-	renderChangeset(changeset.changes)
+	final := known.updateFrom(wip)
+	cli.Say(final.String())
+	// renderChangeset(changeset.changes)
 }
 
 func renderChangeset(all []changeset) {
