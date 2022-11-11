@@ -38,7 +38,7 @@ func isHashHeader(line string) bool {
 }
 
 func getHashHeaderLevel(line string) HeaderLevel {
-	switch strings.Count(strings.TrimSuffix(line, markdownHeaderText(line)), "#") {
+	switch strings.Count(strings.TrimSuffix(line, GetHeaderText(line)), "#") {
 	case 1:
 		return HeaderLevel1
 	case 2:
@@ -105,6 +105,14 @@ func getMarkdownHeaders(lines []string) []headerMarker {
 	return headers
 }
 
-func markdownHeaderText(ttl string) string {
+func GetHeaderText(ttl string) string {
 	return strings.TrimSpace(strings.TrimLeft(ttl, "#"))
+}
+
+func Delistify(item string) string {
+	li := strings.TrimSpace(item)
+	if !strings.HasPrefix(li, "- ") && !strings.HasPrefix(li, "* ") {
+		return item
+	}
+	return strings.TrimPrefix(strings.TrimPrefix(li, "- "), "* ")
 }

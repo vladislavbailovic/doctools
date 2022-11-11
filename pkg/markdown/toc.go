@@ -15,7 +15,7 @@ type TOCItem struct {
 func newMarkdownHeaderTOCItem(hdLevel HeaderLevel, text string) TOCItem {
 	return TOCItem{
 		level:   int(hdLevel) - 1,
-		caption: markdownHeaderText(text),
+		caption: GetHeaderText(text),
 		slug:    SlugifyHeader(text),
 	}
 }
@@ -43,7 +43,7 @@ func (x *TOC) AddItem(item TOCItem) {
 }
 
 func (x TOC) IsTOCHeader(header string) bool {
-	return strings.ToLower(markdownHeaderText(header)) == strings.ToLower(x.headerText())
+	return strings.ToLower(GetHeaderText(header)) == strings.ToLower(x.headerText())
 }
 
 func Slugify(what string) string {
@@ -58,5 +58,5 @@ func Slugify(what string) string {
 }
 
 func SlugifyHeader(ttl string) string {
-	return Slugify(markdownHeaderText(ttl))
+	return Slugify(GetHeaderText(ttl))
 }
