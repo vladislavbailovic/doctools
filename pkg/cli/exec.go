@@ -12,6 +12,7 @@ func Run(command string, args ...string) *exec.Cmd {
 	cmd.Stderr = os.Stderr
 	if err := cmd.Start(); err != nil {
 		Cry("error starting: %v", err)
+		Nit("%s: %#v", command, args)
 	}
 	return cmd
 }
@@ -21,6 +22,7 @@ func CaptureOutput(command string, args ...string) string {
 	out, err := cmd.Output()
 	if err != nil {
 		Cry("error running: %v", err)
+		Nit("%s: %#v", command, args)
 	}
 	return string(out)
 }
