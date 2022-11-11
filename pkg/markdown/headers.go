@@ -120,3 +120,7 @@ func Delistify(item string) string {
 	}
 	return strings.TrimPrefix(strings.TrimPrefix(li, "- "), "* ")
 }
+
+func Listify(item string, level int) string {
+	return strings.Repeat("\t", level) + "- " + item
+}

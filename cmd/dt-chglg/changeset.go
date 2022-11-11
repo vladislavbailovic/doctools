@@ -20,8 +20,7 @@ func (x changeset) String() string {
 	result[1] = ""
 
 	for i, chg := range x.changes {
-		//result[i+2] = markdown.Listify(chg, 0)
-		result[i+2] = chg
+		result[i+2] = markdown.Listify(chg, 0)
 	}
 
 	return strings.Join(result, "\n")

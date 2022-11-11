@@ -168,3 +168,14 @@ func Test_HeaderLevelToString(t *testing.T) {
 		}
 	}
 }
+
+func Test_Listify(t *testing.T) {
+	suite := []string{"", "\t", "\t\t", "\t\t\t", "\t\t\t\t", "\t\t\t\t\t"}
+	for level, prefix := range suite {
+		expected := prefix + "- item"
+		actual := Listify("item", level)
+		if expected != actual {
+			t.Fatalf("expected item [%s] for level %d, got [%s]", expected, level, actual)
+		}
+	}
+}
