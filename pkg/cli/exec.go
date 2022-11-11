@@ -15,3 +15,12 @@ func Run(command string, args ...string) *exec.Cmd {
 	}
 	return cmd
 }
+
+func CaptureOutput(command string, args ...string) string {
+	cmd := exec.Command(command, args...)
+	out, err := cmd.Output()
+	if err != nil {
+		Cry("error running: %v", err)
+	}
+	return string(out)
+}
