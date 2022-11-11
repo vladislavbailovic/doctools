@@ -42,10 +42,31 @@ func main() {
 			if err := updateChangelog(); err != nil {
 				cli.Cry("%v", err)
 			}
+		case "wip":
+			cli.Say("%v", getWIPChangeset())
+		case "show":
+			args := cli.SubcommandArgs()
+			if len(args) < 1 {
+				showHelp()
+				return
+			}
+			what := args[0]
+			if what == "WIP" {
+				cli.Say("%v", getWIPChangeset())
+			} else {
+				log := syncChangelog()
+				cli.Say("%v", log.findChange(what))
+			}
 		default:
 			showHelp()
 		}
 	}
+}
+
+func syncChangelog() changelog {
+	known := fromFile("CHANGELOG.md")
+	wip := fromRepo()
+	return known.updateFrom(wip)
 }
 
 func initChangelog() error {
@@ -54,9 +75,7 @@ func initChangelog() error {
 }
 
 func updateChangelog() error {
-	known := fromFile("CHANGELOG.md")
-	wip := fromRepo()
-	final := known.updateFrom(wip)
+	final := syncChangelog()
 	return writeChangelog(final)
 }
 

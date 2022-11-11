@@ -73,6 +73,18 @@ func getChangeset(since, now string) changeset {
 	}
 }
 
+func getWIPChangeset() changeset {
+	date, err := time.Parse(time.RFC3339, getTagDate("HEAD"))
+	if err != nil {
+		cli.Nit("error for date string [%s]: %v", getTagDate("HEAD"), err)
+	}
+	return changeset{
+		name:    "WIP",
+		date:    date,
+		changes: getWIPChanges(),
+	}
+}
+
 func parseChangeset(name string, list []string) changeset {
 	result := []string{}
 	for _, item := range list {

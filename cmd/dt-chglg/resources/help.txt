@@ -7,4 +7,6 @@ Subcommands:
 	help - this help screen (alias: -h, --help)
 	init [-f/--force] - initialize CHANGELOG.md (alias: new)
 	update - update changelog from the last tag in existing log to latest changes (alias: sync)
+	wip - just show the running list of changes since last changelog entry
+	show [milestone] - just show a list of changelog entries for a milestone
 

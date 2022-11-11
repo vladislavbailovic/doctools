@@ -80,3 +80,12 @@ func (x changelog) String() string {
 	}
 	return strings.Join(result, "\n\n\n")
 }
+
+func (x changelog) findChange(name string) changeset {
+	for _, set := range x.changes {
+		if set.name == name {
+			return set
+		}
+	}
+	return changeset{}
+}
