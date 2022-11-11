@@ -26,6 +26,10 @@ const (
 	Subheading = HeaderLevel2
 )
 
+func (x HeaderLevel) String() string {
+	return strings.Repeat("#", int(x))
+}
+
 type headerMarker struct {
 	level      HeaderLevel
 	kind       HeaderType

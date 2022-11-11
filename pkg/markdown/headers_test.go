@@ -151,3 +151,20 @@ func Test_md_markdownHeaderText(t *testing.T) {
 		}
 	}
 }
+
+func Test_HeaderLevelToString(t *testing.T) {
+	suite := map[HeaderLevel]string{
+		HeaderLevel1: "#",
+		HeaderLevel2: "##",
+		HeaderLevel3: "###",
+		HeaderLevel4: "####",
+		HeaderLevel5: "#####",
+		HeaderLevel6: "######",
+	}
+	for test, expected := range suite {
+		actual := test.String()
+		if actual != expected {
+			t.Fatalf("expected header [%s] for level %d, got [%s]", expected, test, actual)
+		}
+	}
+}
