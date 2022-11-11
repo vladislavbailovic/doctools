@@ -40,6 +40,11 @@ func getTagNames() []string {
 	return strings.Split(raw, "\n")
 }
 
+func getTagDate(tag string) string {
+	raw := strings.TrimSpace(cli.CaptureOutput("git", "log", "-1", "--pretty='%cI'", tag))
+	return strings.Replace(raw, "'", "", -1)
+}
+
 type commit struct {
 	hash  string
 	title string

@@ -1,12 +1,17 @@
 package main
 
 import (
+	"doctools/pkg/cli"
 	"doctools/pkg/markdown"
 	"strings"
+	"time"
 )
+
+const dateFormat string = "2006-01-02"
 
 type changeset struct {
 	name    string
+	date    time.Time
 	changes []string
 }
 
@@ -16,7 +21,13 @@ func (x changeset) hasChanges() bool {
 
 func (x changeset) String() string {
 	result := make([]string, len(x.changes)+2, len(x.changes)+2)
-	result[0] = markdown.HeaderLevel3.String() + " " + x.name
+	result[0] = strings.Join([]string{
+		markdown.HeaderLevel3.String(),
+		" ",
+		x.name,
+		" ",
+		"(" + x.date.Format(dateFormat) + ")",
+	}, "")
 	result[1] = ""
 
 	for i, chg := range x.changes {
@@ -51,8 +62,13 @@ func getChangeset(since, now string) changeset {
 	if now == lastCommitDescriptor() {
 		name = "WIP"
 	}
+	date, err := time.Parse(time.RFC3339, getTagDate(now))
+	if err != nil {
+		cli.Nit("error for date string [%s]: %v", getTagDate(now), err)
+	}
 	return changeset{
 		name:    name,
+		date:    date,
 		changes: getChangesBetween(now, since),
 	}
 }
@@ -66,10 +82,25 @@ func parseChangeset(name string, list []string) changeset {
 		}
 		result = append(result, item)
 	}
+	name, date := parseChangesetName(name)
 	return changeset{
 		name:    name,
+		date:    date,
 		changes: result,
 	}
+}
+
+func parseChangesetName(name string) (string, time.Time) {
+	parts := strings.Split(name, "(")
+	if len(parts) == 2 {
+		name = strings.TrimSpace(parts[0])
+		date, err := time.Parse(dateFormat, parts[1][:len(parts[1])-1])
+		if err != nil {
+			cli.Nit("error for date string [%s]: %v", parts[1][:len(parts[1])-1], err)
+		}
+		return name, date
+	}
+	return name, time.Time{}
 }
 
 func getWIPChanges() []string {
