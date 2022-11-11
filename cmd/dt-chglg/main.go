@@ -2,92 +2,85 @@ package main
 
 import (
 	"doctools/pkg/cli"
-	"strings"
 )
 
 func main() {
-	cli.Say(
-		"%#v",
-		getLogLines(),
-	)
+	for _, set := range reverse(getChangesets()) {
+		cli.Say("### %s", set.name)
+		if set.hasChanges() {
+			for _, c := range set.changes {
+				cli.Say("\t- %s", c)
+			}
+		} else {
+			cli.Say("\t* No changes *")
+		}
+		cli.Say("")
+	}
 }
 
-type tag struct {
-	commit
-	name string
+func reverse(input []changeset) []changeset {
+	for i, j := 0, len(input)-1; i < j; i, j = i+1, j-1 {
+		input[i], input[j] = input[j], input[i]
+	}
+	return input
 }
 
-func getTags() []tag {
-	tags := []tag{}
-
-	raw := strings.TrimSpace(cli.CaptureOutput("git", "tag"))
-	if "" == raw {
-		return tags
-	}
-	for _, line := range strings.Split(raw, "\n") {
-		tagName := strings.TrimSpace(line)
-		if "" == tagName {
-			continue
-		}
-		nfo := getCommits(tagName, "-n", "1")
-		if len(nfo) != 1 {
-			cli.Nit("parsing tag %s, wrong result %#v", tagName, nfo)
-			continue
-		}
-		tag := tag{
-			commit: nfo[0],
-			name:   tagName,
-		}
-		tags = append(tags, tag)
-	}
-	return tags
+type changeset struct {
+	name    string
+	changes []string
 }
 
-type commit struct {
-	hash  string
-	title string
+func (x changeset) hasChanges() bool {
+	return len(x.changes) > 0
 }
 
-func getCommits(extraParams ...string) []commit {
-	result := []commit{}
-	lines := getLogLines(extraParams...)
-	if len(lines) == 0 {
-		return result
-	}
-	for _, line := range lines {
-		cmt := commitFromLogLine(line)
-		if cmt == (commit{}) {
-			continue
+func getChangesets() []changeset {
+	result := []changeset{}
+	tags := getTagNames()
+
+	prev := firstCommitDescriptor()
+	for _, tag := range tags {
+		set := getChangeset(prev, tag)
+		if set.hasChanges() {
+			result = append(result, set)
 		}
-		result = append(result, cmt)
+		prev = tag
 	}
+	set := getChangeset(prev, lastCommitDescriptor())
+	if set.hasChanges() {
+		result = append(result, set)
+	}
+
 	return result
 }
 
-func commitFromLogLine(line string) commit {
-	parts := strings.SplitN(line, " ", 2)
-	if len(parts) != 2 {
-		return commit{}
+func getChangeset(since, now string) changeset {
+	name := now
+	if now == lastCommitDescriptor() {
+		name = "WIP"
 	}
-	title := strings.TrimSpace(parts[1])
-	if strings.HasPrefix(title, "(tag: ") {
-		tagEnd := strings.Index(title, ")")
-		if tagEnd > 0 && tagEnd < len(title) {
-			title = strings.TrimSpace(title[tagEnd:])
-		}
-	}
-	return commit{
-		hash:  strings.TrimSpace(parts[0]),
-		title: strings.TrimSpace(parts[1]),
+	return changeset{
+		name:    name,
+		changes: getChangesBetween(now, since),
 	}
 }
 
-func getLogLines(extraParams ...string) []string {
-	params := []string{"log", "--oneline"}
-	params = append(params, extraParams...)
-	out := cli.CaptureOutput("git", params...)
-	if "" == out {
-		return []string{}
+func getWIPChanges() []string {
+	result := []string{}
+
+	tags := getTagNames()
+	if len(tags) < 1 {
+		return result
 	}
-	return strings.Split(strings.TrimSpace(out), "\n")
+
+	tag := tags[len(tags)-1]
+	return getChangesBetween(lastCommitDescriptor(), tag)
+}
+
+func getChangesBetween(earliest, oldest string) []string {
+	result := []string{}
+	for _, cmt := range getCommitsBetween(earliest, oldest) {
+		result = append(result, cmt.title)
+	}
+	return result
 }
