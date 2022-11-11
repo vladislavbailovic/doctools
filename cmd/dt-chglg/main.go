@@ -31,7 +31,7 @@ func main() {
 			if err := initChangelog(); err != nil {
 				cli.Cry("%v", err)
 			}
-		case "update", "toc":
+		case "update", "sync":
 			_, err := os.Stat("CHANGELOG.md")
 			if err != nil {
 				if err := initChangelog(); err != nil {
