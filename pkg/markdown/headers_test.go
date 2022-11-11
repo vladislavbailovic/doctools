@@ -145,7 +145,7 @@ func Test_md_markdownHeaderText(t *testing.T) {
 		"# test ##": "test ##",
 	}
 	for test, expected := range suite {
-		actual := markdownHeaderText(test)
+		actual := GetHeaderText(test)
 		if actual != expected {
 			t.Fatalf("[%s]: expected [%s], got [%s]", test, expected, actual)
 		}
