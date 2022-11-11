@@ -7,11 +7,24 @@ import (
 )
 
 type changelog struct {
-	changes []changeset
+	milestones map[string]bool
+	changes    []changeset
+}
+
+func fromRepo() changelog {
+	return fromChangesets(getChangesets())
+}
+
+func fromChangesets(changes []changeset) changelog {
+	milestones := make(map[string]bool, len(changes))
+	for _, item := range changes {
+		milestones[item.name] = true
+	}
+	return changelog{changes: changes, milestones: milestones}
 }
 
 func fromFile(path string) changelog {
-	result := []changeset{}
+	changes := []changeset{}
 
 	raw, err := os.ReadFile(path)
 	if err != nil {
@@ -32,20 +45,25 @@ func fromFile(path string) changelog {
 			content = lines[pos+1:]
 		}
 
-		set := changeset{
-			name: markdown.GetHeaderText(current),
-		}
-		for _, c := range content {
-			c = markdown.Delistify(c)
-			if len(c) == 0 {
-				continue
-			}
-			set.changes = append(set.changes, c)
-		}
-		result = append(result, set)
+		name := markdown.GetHeaderText(current)
+		changes = append(changes, parseChangeset(name, content))
 
 		pos = next
 	}
 
-	return changelog{changes: result}
+	return fromChangesets(changes)
+}
+
+func (x changelog) updateFrom(wip changelog) changelog {
+	result := []changeset{}
+	for _, set := range wip.changes {
+		if _, ok := x.milestones[set.name]; ok {
+			break // break on first set with same milestone name
+		}
+		result = append(result, set)
+	}
+	for _, set := range x.changes {
+		result = append(result, set)
+	}
+	return fromChangesets(result)
 }

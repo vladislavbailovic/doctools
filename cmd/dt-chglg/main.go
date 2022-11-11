@@ -5,10 +5,10 @@ import (
 )
 
 func main() {
-	wip := getChangesets()
 	known := fromFile("CHANGELOG.md")
-	changeset := diffChangesets(wip, known.changes)
-	renderChangeset(changeset)
+	wip := fromRepo()
+	changeset := known.updateFrom(wip)
+	renderChangeset(changeset.changes)
 }
 
 func renderChangeset(all []changeset) {
