@@ -2,15 +2,12 @@ package main
 
 import (
 	"doctools/pkg/cli"
-	"doctools/pkg/markdown"
-	"os"
-	"strings"
 )
 
 func main() {
 	wip := getChangesets()
-	known := fromChangelog()
-	changeset := diffChangesets(wip, known)
+	known := fromFile("CHANGELOG.md")
+	changeset := diffChangesets(wip, known.changes)
 	renderChangeset(changeset)
 }
 
@@ -38,43 +35,4 @@ func diffChangesets(wip, known []changeset) []changeset {
 	}
 
 	return wip[:diff]
-}
-
-func fromChangelog() []changeset {
-	result := []changeset{}
-
-	raw, err := os.ReadFile("CHANGELOG.md")
-	if err != nil {
-		return result
-	}
-	lines := strings.Split(string(raw), "\n")
-	md := markdown.NewMarkdownFromLines(lines)
-
-	pos := md.FindHeader(markdown.HeaderAny)
-	for pos >= 0 {
-		next := md.FindHeaderAfter(pos, markdown.HeaderAny)
-		current := lines[pos]
-
-		content := []string{}
-		if next > 0 {
-			content = lines[pos+1 : next]
-		} else {
-			content = lines[pos+1:]
-		}
-
-		set := changeset{
-			name: markdown.GetHeaderText(current),
-		}
-		for _, c := range content {
-			if len(c) == 0 {
-				continue
-			}
-			set.changes = append(set.changes, markdown.Delistify(c))
-		}
-		result = append(result, set)
-
-		pos = next
-	}
-
-	return result
 }
