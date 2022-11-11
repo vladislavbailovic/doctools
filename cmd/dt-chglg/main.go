@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	for _, set := range reverse(getChangesets()) {
+	for _, set := range getChangesets() {
 		cli.Say("### %s", set.name)
 		if set.hasChanges() {
 			for _, c := range set.changes {
@@ -51,7 +51,7 @@ func getChangesets() []changeset {
 		result = append(result, set)
 	}
 
-	return result
+	return reverse(result)
 }
 
 func getChangeset(since, now string) changeset {
