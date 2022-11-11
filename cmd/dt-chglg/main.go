@@ -8,8 +8,9 @@ import (
 )
 
 func main() {
-	// changeset := getChangesets()
-	changeset := fromChangelog()
+	wip := getChangesets()
+	known := fromChangelog()
+	changeset := diffChangesets(wip, known)
 	renderChangeset(changeset)
 }
 
@@ -25,6 +26,18 @@ func renderChangeset(all []changeset) {
 		}
 		cli.Say("")
 	}
+}
+
+func diffChangesets(wip, known []changeset) []changeset {
+	if len(known) > len(wip) {
+		return []changeset{}
+	}
+	diff := len(wip) - len(known)
+	if diff == 0 {
+		return known
+	}
+
+	return wip[:diff]
 }
 
 func fromChangelog() []changeset {
