@@ -40,6 +40,8 @@ func main() {
 			license, err := licenseFS.ReadFile(fmt.Sprintf("resources/license_%s.txt", tpl))
 			if err != nil {
 				cli.Cry("%v", err)
+				cli.Nit("Falling back to wtfpl")
+				license, _ = licenseFS.ReadFile("resources/license_wtf.txt")
 			}
 			if cli.HasFlag("-p") || cli.HasFlag("--print") || cli.HasFlag("print") {
 				cli.Say(string(license))
