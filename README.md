@@ -6,9 +6,9 @@ A set of tools to automate standard project documentation chores.
 ## Table of Contents
 
 	- [Quick Start](#quick-start)
-		- [Building](#building)
-		- [Running](#running)
-		- [Testing](#testing)
+	    - [Building](#building)
+	    - [Running](#running)
+	    - [Testing](#testing)
 	- [Installation](#installation)
 
 

@@ -4,7 +4,7 @@
 ## Table of Contents
 
 - [Quick Start](#{{ "Quick Start" | slugify }}){{ range $title, $commands := .Sections }}
-	- [{{ $title }}](#{{ $title | slugify }}){{ end }}
+    - [{{ $title }}](#{{ $title | slugify }}){{ end }}
 
 {{ end }}
 ## Quick Start
