@@ -5,6 +5,7 @@ dt [TOOL] <ARGS>
 
 Tools:
 	help - this help screen (alias: -h, --help)
+	init [-f/--force] - init project documentation; runs init on all subcommands
 	adr - create and manage ADRs (Architecture Decision Records)
 	rdme - initialize and manage project top-level README.md (alias: readme)
 	lcs - initialize and manage project LICENSE.txt (alias: license)

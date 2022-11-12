@@ -37,6 +37,24 @@ func main() {
 		switch subcommand {
 		case "-h", "--help", "help":
 			showHelp()
+		case "init":
+			params := []string{"init"}
+			if cli.HasFlag("-f") || cli.HasFlag("--force") {
+				params = append(params, "--force")
+			}
+			executed := map[string]bool{}
+			for _, command := range cmds {
+				if _, ok := executed[command]; ok {
+					continue
+				}
+				executed[command] = true
+				cmd := cli.Run(filepath.Join(root, command), params...)
+				if err := cmd.Wait(); err != nil {
+					cli.Cry("error executing %s init: %v", command, err)
+					continue
+				}
+			}
+			return
 		default:
 			for alias, command := range cmds {
 				if subcommand != alias {
