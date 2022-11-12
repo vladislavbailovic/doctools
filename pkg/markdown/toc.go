@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"doctools/pkg/config"
 	"fmt"
 	"strings"
 	"unicode"
@@ -62,5 +63,6 @@ func Slugify(what string) string {
 }
 
 func SlugifyHeader(ttl string) string {
-	return Slugify(GetHeaderText(ttl))
+	cfg := config.Get()
+	return cfg.SlugPrefix + Slugify(GetHeaderText(ttl))
 }

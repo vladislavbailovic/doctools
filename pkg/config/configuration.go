@@ -5,6 +5,7 @@ import "strings"
 type Configuration struct {
 	DocPath      string
 	IgnoredPaths []string
+	SlugPrefix   string
 }
 
 var _configuration Configuration
@@ -48,5 +49,6 @@ func getDefault() Configuration {
 	return Configuration{
 		DocPath:      DocumentationPath,
 		IgnoredPaths: []string{"testdata"},
+		SlugPrefix:   "markdown-header-",
 	}
 }
