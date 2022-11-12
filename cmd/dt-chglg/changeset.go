@@ -20,7 +20,7 @@ func (x changeset) hasChanges() bool {
 }
 
 func (x changeset) String() string {
-	result := make([]string, len(x.changes)+2, len(x.changes)+2)
+	result := make([]string, len(x.changes)+2)
 	result[0] = strings.Join([]string{
 		markdown.HeaderLevel3.String(),
 		" ",

@@ -47,7 +47,7 @@ func (x *TOC) AddItem(item TOCItem) {
 }
 
 func (x TOC) IsTOCHeader(header string) bool {
-	return strings.ToLower(GetHeaderText(header)) == strings.ToLower(x.headerText())
+	return strings.EqualFold(GetHeaderText(header), x.headerText())
 }
 
 func Slugify(what string) string {

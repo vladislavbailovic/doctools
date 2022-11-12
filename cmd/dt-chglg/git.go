@@ -15,7 +15,7 @@ func getTags() []tag {
 
 	for _, line := range getTagNames() {
 		tagName := strings.TrimSpace(line)
-		if "" == tagName {
+		if tagName == "" {
 			continue
 		}
 		nfo := getCommits(tagName, "-n", "1")
@@ -34,7 +34,7 @@ func getTags() []tag {
 
 func getTagNames() []string {
 	raw := strings.TrimSpace(cli.CaptureOutput("git", "tag"))
-	if "" == raw {
+	if raw == "" {
 		return []string{}
 	}
 	return strings.Split(raw, "\n")
@@ -104,7 +104,7 @@ func getLogLines(extraParams ...string) []string {
 	params := []string{"log", "--oneline"}
 	params = append(params, extraParams...)
 	out := cli.CaptureOutput("git", params...)
-	if "" == out {
+	if out == "" {
 		return []string{}
 	}
 	return strings.Split(strings.TrimSpace(out), "\n")

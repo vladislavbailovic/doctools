@@ -10,9 +10,7 @@ import (
 const doubleStarMaxGlobDepth int = 5
 
 type projectInfo struct {
-	path        string
-	name        string
-	description string
+	path string
 }
 
 func (x projectInfo) hasFiles(expr string) bool {
@@ -46,7 +44,7 @@ func (x projectInfo) _listFiles(expr string) []string {
 }
 
 func (x projectInfo) hasFile(path string) bool {
-	if "" == x.path {
+	if x.path == "" {
 		return false
 	}
 	if nfo, err := os.Stat(x.getPath(path)); err != nil {
@@ -57,7 +55,7 @@ func (x projectInfo) hasFile(path string) bool {
 }
 
 func (x projectInfo) hasDir(path string) bool {
-	if "" == x.path {
+	if x.path == "" {
 		return false
 	}
 	if nfo, err := os.Stat(x.getPath(path)); err != nil {

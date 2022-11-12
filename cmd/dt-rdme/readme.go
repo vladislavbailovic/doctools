@@ -37,7 +37,7 @@ func newTestSection(content string) section {
 
 func newDockerSections(dockerfile string) []section {
 	name := filepath.Base(filepath.Dir(dockerfile))
-	if "" == name || "." == name {
+	if name == "" || name == "." {
 		name = "latest"
 		dockerfile = "."
 	}
@@ -45,8 +45,4 @@ func newDockerSections(dockerfile string) []section {
 		newBuildSection(fmt.Sprintf("docker build %s -t %s", dockerfile, name)),
 		newRunSection("docker run latest"),
 	}
-}
-
-func newPhpunitSection(testfile string) section {
-	return newTestSection(fmt.Sprintf("phpunit -c %s", testfile))
 }

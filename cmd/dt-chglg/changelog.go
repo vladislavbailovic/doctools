@@ -43,7 +43,7 @@ func parseChangelog(raw string) changelog {
 		next := md.FindHeaderAfter(pos, markdown.HeaderAny)
 		current := lines[pos]
 
-		content := []string{}
+		var content []string
 		if next > 0 {
 			content = lines[pos+1 : next]
 		} else {
@@ -67,14 +67,12 @@ func (x changelog) updateFrom(wip changelog) changelog {
 		}
 		result = append(result, set)
 	}
-	for _, set := range x.changes {
-		result = append(result, set)
-	}
+	result = append(result, x.changes...)
 	return fromChangesets(result)
 }
 
 func (x changelog) String() string {
-	result := make([]string, len(x.changes), len(x.changes))
+	result := make([]string, len(x.changes))
 	for i, set := range x.changes {
 		result[i] = set.String()
 	}

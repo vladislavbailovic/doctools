@@ -5,10 +5,10 @@ import "testing"
 func Test_FactoryError(t *testing.T) {
 	nfo := projectInfo{}
 
-	if "" != nfo.path {
+	if nfo.path != "" {
 		t.Fatalf("invalid project should not have path: %v", nfo.path)
 	}
-	if "" != nfo.getPath("whatever") {
+	if nfo.getPath("whatever") != "" {
 		t.Fatalf("invalid project should not resolve paths: %v", nfo.getPath("whatever"))
 	}
 }
