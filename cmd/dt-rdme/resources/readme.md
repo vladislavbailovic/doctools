@@ -2,8 +2,9 @@
 
 {{ if .Sections }}
 ## Table of Contents
-{{ range $title, $commands := .Sections }}
-- [{{ $title }}](#{{ $title | slugify }}){{ end }}
+
+- [Quick Start](#{{ "Quick Start" | slugify }}){{ range $title, $commands := .Sections }}
+	- [{{ $title }}](#{{ $title | slugify }}){{ end }}
 
 {{ end }}
 ## Quick Start

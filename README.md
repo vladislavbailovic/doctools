@@ -5,10 +5,11 @@ A set of tools to automate standard project documentation chores.
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-	- [Building](#building)
-	- [Running](#running)
-	- [Testing](#testing)
+	- [Quick Start](#quick-start)
+		- [Building](#building)
+		- [Running](#running)
+		- [Testing](#testing)
+	- [Installation](#installation)
 
 
 ## Quick Start
@@ -36,4 +37,12 @@ $ go run doctools/cmd/dt-rdme
 
 ```console
 $ go test ./...
+```
+
+
+## Installation
+
+```console
+$ go build -o ./ doctools/cmd/...
+$ go install doctools/cmd/...
 ```
