@@ -11,7 +11,7 @@
 {{ range $title, $commands := .Sections }}
 ### {{ $title }}
 
-```sh{{ range $commands }}
+```console{{ range $commands }}
 $ {{ . }}{{ end }}
 ```
 
