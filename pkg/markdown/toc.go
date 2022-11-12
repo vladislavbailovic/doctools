@@ -22,7 +22,7 @@ func newMarkdownHeaderTOCItem(hdLevel HeaderLevel, text string) TOCItem {
 
 func (x TOCItem) String() string {
 	return fmt.Sprintf("%s- [%s](#%s)",
-		strings.Repeat("\t", x.level),
+		strings.Repeat("\t", x.level-1),
 		x.caption, x.slug)
 }
 
