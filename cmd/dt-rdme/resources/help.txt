@@ -5,5 +5,6 @@ dt-rdme [SUBCOMMAND] <ARGS>
 
 Subcommands:
 	help - this help screen (alias: -h, --help)
+	show - just render the generated README to stdout
 	init [-f/--force] - initialize README.md (alias: new)
 	toc - update readme table of contents (alias: update)
