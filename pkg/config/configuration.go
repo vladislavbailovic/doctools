@@ -43,3 +43,10 @@ func Load() (Configuration, error) {
 func Get() Configuration {
 	return _configuration
 }
+
+func getDefault() Configuration {
+	return Configuration{
+		DocPath:      DocumentationPath,
+		IgnoredPaths: []string{"testdata"},
+	}
+}

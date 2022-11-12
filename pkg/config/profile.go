@@ -35,9 +35,7 @@ func loadGlobalConfiguration() (Configuration, error) {
 func initializeProfile() (Configuration, error) {
 	cli.Nit("Initializing global (profile) configuration")
 
-	cfg := Configuration{
-		DocPath: DocumentationPath,
-	}
+	cfg := getDefault()
 
 	base, err := getProfileDirectory()
 	if err != nil {

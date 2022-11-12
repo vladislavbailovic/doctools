@@ -25,9 +25,7 @@ func InitializeProject(cfg Configuration) error {
 func loadProjectConfiguration() (Configuration, error) {
 	cli.Nit("Attempting to load project configuration")
 
-	cfg := Configuration{
-		DocPath: DocumentationPath,
-	}
+	cfg := getDefault()
 
 	configFile, err := getProjectConfigFilePath()
 	if err != nil {
