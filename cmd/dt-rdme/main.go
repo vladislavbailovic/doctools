@@ -52,11 +52,7 @@ func main() {
 				cli.Cry("%v", err)
 			}
 		case "show":
-			rdm, err := getReadme(proj)
-			if err != nil {
-				cli.Cry("%v", err)
-				return
-			}
+			rdm := getReadme(proj)
 			cli.Say(rdm)
 		case "update", "toc":
 			path, err := proj.getFile("README.md")
@@ -75,22 +71,16 @@ func main() {
 	}
 }
 
-func getReadme(p projectInfo) (string, error) {
-	nfo, err := detectProjectMeta(p)
-	if err != nil {
-		return "", err
-	}
+func getReadme(p projectInfo) string {
+	nfo := detectProjectMeta(p)
 
 	buffer := new(strings.Builder)
 	readmeTemplate.Execute(buffer, nfo)
-	return buffer.String(), nil
+	return buffer.String()
 }
 
 func initReadme(p projectInfo) error {
-	rdm, err := getReadme(p)
-	if err != nil {
-		return err
-	}
+	rdm := getReadme(p)
 	if err := os.WriteFile("README.md", []byte(rdm), 0622); err != nil {
 		return err
 	}
@@ -106,7 +96,7 @@ func updateReadmeToc(path string) error {
 	return nil
 }
 
-func detectProjectMeta(p projectInfo) (readme, error) {
+func detectProjectMeta(p projectInfo) readme {
 	result := readme{}
 	basedir := filepath.Base(p.path)
 
@@ -182,5 +172,5 @@ func detectProjectMeta(p projectInfo) (readme, error) {
 		result.Name = basedir
 	}
 
-	return result, nil
+	return result
 }

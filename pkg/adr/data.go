@@ -90,7 +90,7 @@ func parseData(raw string) (Data, error) {
 }
 
 func next(lines []string, from int, pattern string) (int, error) {
-	lineIdx := 1
+	lineIdx := from
 	for lines[lineIdx] != pattern {
 		lineIdx++
 		if lineIdx > len(lines) {
