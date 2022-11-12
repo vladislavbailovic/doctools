@@ -14,6 +14,16 @@ func showHelp() {
 	cli.Say(help)
 }
 
+var cmds map[string]string = map[string]string{
+	"adr":       "dt-adr",
+	"rdme":      "dt-rdme",
+	"readme":    "dt-rdme",
+	"lcs":       "dt-license",
+	"license":   "dt-license",
+	"chglg":     "dt-chglg",
+	"changelog": "dt-chglg",
+}
+
 func main() {
 	if !cli.HasSubcommand() {
 		showHelp()
@@ -23,35 +33,23 @@ func main() {
 			cli.Cry("%v", err)
 			return
 		}
-		switch cli.Subcommand() {
+		subcommand := cli.Subcommand()
+		switch subcommand {
 		case "-h", "--help", "help":
 			showHelp()
-		case "adr":
-			cmd := cli.Run(filepath.Join(root, "./dt-adr"), cli.SubcommandArgs()...)
-			if err := cmd.Wait(); err != nil {
-				cli.Cry("error executing: %v", err)
-				return
-			}
-		case "rdme", "readme":
-			cmd := cli.Run(filepath.Join(root, "./dt-rdme"), cli.SubcommandArgs()...)
-			if err := cmd.Wait(); err != nil {
-				cli.Cry("error executing: %v", err)
-				return
-			}
-		case "lcs", "license":
-			cmd := cli.Run(filepath.Join(root, "./dt-license"), cli.SubcommandArgs()...)
-			if err := cmd.Wait(); err != nil {
-				cli.Cry("error executing: %v", err)
-				return
-			}
-		case "chglg", "changelog":
-			cmd := cli.Run(filepath.Join(root, "./dt-chglg"), cli.SubcommandArgs()...)
-			if err := cmd.Wait(); err != nil {
-				cli.Cry("error executing: %v", err)
-				return
-			}
 		default:
-			showHelp()
+			for alias, command := range cmds {
+				if subcommand != alias {
+					continue
+				}
+				cmd := cli.Run(filepath.Join(root, command), cli.SubcommandArgs()...)
+				if err := cmd.Wait(); err != nil {
+					cli.Cry("error executing: %v", err)
+					return
+				}
+			}
+			showHelp() // If we got here, no good
+			return
 		}
 	}
 }
