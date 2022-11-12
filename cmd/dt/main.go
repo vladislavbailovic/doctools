@@ -63,8 +63,8 @@ func main() {
 				cmd := cli.Run(filepath.Join(root, command), cli.SubcommandArgs()...)
 				if err := cmd.Wait(); err != nil {
 					cli.Cry("error executing: %v", err)
-					return
 				}
+				return
 			}
 			showHelp() // If we got here, no good
 			return
