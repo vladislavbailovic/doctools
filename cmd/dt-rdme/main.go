@@ -2,6 +2,7 @@ package main
 
 import (
 	"doctools/pkg/cli"
+	"doctools/pkg/config"
 	"doctools/pkg/markdown"
 	_ "embed"
 	"fmt"
@@ -27,6 +28,11 @@ func showHelp() {
 }
 
 func main() {
+	_, err := config.Load()
+	if err != nil {
+		cli.Cry("%v", err)
+		return
+	}
 	if !cli.HasSubcommand() {
 		showHelp()
 	} else {
@@ -144,8 +150,13 @@ func detectProjectMeta(p projectInfo) (readme, error) {
 		}
 	}
 
+	cfg := config.Get()
 	if p.hasFiles("**/Dockerfile") {
 		for _, dockerfile := range p.listFiles("**/Dockerfile") {
+			if cfg.IsPathIgnored(dockerfile) {
+				cli.Nit("path ignored by config: %s", dockerfile)
+				continue
+			}
 			for _, sect := range newDockerSections(dockerfile) {
 				result.addSection(sect)
 			}
