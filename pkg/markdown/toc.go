@@ -21,8 +21,12 @@ func newMarkdownHeaderTOCItem(hdLevel HeaderLevel, text string) TOCItem {
 }
 
 func (x TOCItem) String() string {
+	indent := 0
+	if x.level >= 1 {
+		indent = x.level - 1
+	}
 	return fmt.Sprintf("%s- [%s](#%s)",
-		strings.Repeat("\t", x.level-1),
+		strings.Repeat("\t", indent),
 		x.caption, x.slug)
 }
 
