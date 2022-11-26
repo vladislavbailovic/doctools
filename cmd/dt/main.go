@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 //go:embed resources/help.txt
@@ -28,10 +29,9 @@ func main() {
 	if !cli.HasSubcommand() {
 		showHelp()
 	} else {
-		root, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			cli.Cry("%v", err)
-			return
+		root := ""
+		if strings.HasPrefix(os.Args[0], os.TempDir()) {
+			root = "./"
 		}
 		subcommand := cli.Subcommand()
 		switch subcommand {
